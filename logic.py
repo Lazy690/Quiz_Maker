@@ -22,16 +22,44 @@ def make_scrollable_frame(container):
 
     return scrollable_frame
 
+def auto_resize_textbox(text_widget, text_font):
+    content = text_widget.get("1.0", "end-1c")
+    lines = content.split('\n')
 
+    total_lines = 0
+    for line in lines:
+        pixel_width = text_font.measure(line)
+        box_width = text_widget.winfo_width()
+        if box_width <= 1:  # Widget might not be fully rendered yet
+            continue
+        wrapped_lines = max(1, int(pixel_width / box_width) + 1)
+        total_lines += wrapped_lines
 
-def construct_dictionary(headers, content):
+    text_widget.config(height=total_lines)
+
+def get_ques_text(ques_text):
+            question_list = []
+            for i in range(len(ques_text)):
+                question_list.append(ques_text[i].get("1.0", "end-1c"))
+            return question_list
+        
+def get_options_box(ques_options):
+            options_list = []  
+
+            for i in ques_options:  
+                option_list = {}
+                 
+                option_list["text"] = (i["text"].get("1.0", "end-1c")) 
+                option_list["point"] = (i["point"].get("1.0", "end-1c"))   
+                options_list.append(option_list)  
+
+            return options_list
+
+def construct_dictionary(title, description, content):
     package_json = {}
 
-    for i, header in enumerate(headers):
-        if i == 0:
-            package_json["title"] = header
-        else:
-            package_json["description"] = header
+    package_json["title"] = title
+    package_json["description"] = description
 
     package_json["content"] = content
     return package_json
@@ -48,7 +76,29 @@ def save_json(package):
 
     print(f"Quiz saved to {filepath}")
 
-    
+def new_save_button(Title, Description, Questions, Options):
+
+            title = Title
+            description = Description
+            questions = Questions
+            options = Options
+
+            questions_dick = {}
+            
+            def make_big_dick(questions, options):
+                for i in range(len(questions)):
+                    questions_dick[f"question {i + 1}"] = {}
+                    questions_dick[f"question {i + 1}"]["text"] = questions[i]
+                    questions_dick[f"question {i + 1}"]["options"] = {}
+
+                    for c in range(len(options)):
+                        for key in options:
+                            questions_dick[f"question {i + 1}"]["options"][f"option {c + 1}"] = {}
+                            questions_dick[f"question {i + 1}"]["options"][f"option {c + 1}"]["text"] = key["text"]
+                            questions_dick[f"question {i + 1}"]["options"][f"option {c + 1}"]["point"] = key["point"]
+                return questions_dick
+
+            save_json(construct_dictionary(title, description, make_big_dick(questions, options)))  
      
         
 

@@ -12,10 +12,12 @@ def get_entry_values():
     values = [e.get() for e in entries]
     print(values)
 
-root = tk.Tk()
-create_entries(root, 5)  # Create 5 entries for example
+list = [
+    {"text": "Yes", "point": 2},
+    {"text": "no", "point": 0},
+    {"text": "maybe", "point": 1}]
 
-btn = tk.Button(root, text="Print Values", command=get_entry_values)
-btn.pack()
 
-root.mainloop()
+for i in list:
+    for c in i:
+        print(i[c])

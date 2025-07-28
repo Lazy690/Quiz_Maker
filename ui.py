@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import font as tkfont
-import logic 
+import logic
+
 
 def start_ui():
     root = tk.Tk()
@@ -9,21 +10,6 @@ def start_ui():
     root.geometry("800x600")
     root.mainloop()
     
-def auto_resize_textbox(text_widget, text_font):
-    content = text_widget.get("1.0", "end-1c")
-    lines = content.split('\n')
-
-    total_lines = 0
-    for line in lines:
-        pixel_width = text_font.measure(line)
-        box_width = text_widget.winfo_width()
-        if box_width <= 1:  # Widget might not be fully rendered yet
-            continue
-        wrapped_lines = max(1, int(pixel_width / box_width) + 1)
-        total_lines += wrapped_lines
-
-    text_widget.config(height=total_lines)
-
 def show_main_menu(root):
     
     button_new = tk.Button(root, text="New Quiz", width=25, command=lambda: show_new_quiz_screen(root))
@@ -39,7 +25,7 @@ def show_new_quiz_screen(root):
     
     for widget in root.winfo_children():
         widget.destroy()
-    scrollable = make_scrollable_frame(root)
+    scrollable = logic.make_scrollable_frame(root)
 
     text_font = tkfont.Font(family="Arial", size=11)
 
@@ -56,7 +42,7 @@ def show_new_quiz_screen(root):
                         font=text_font,
                         bg=root.cget("bg"))
     title_box.pack(padx=20, fill="x")
-    title_box.bind("<KeyRelease>", lambda event: auto_resize_textbox(title_box, text_font))
+    title_box.bind("<KeyRelease>", lambda event: logic.auto_resize_textbox(title_box, text_font))
 
     # Description
     label = tk.Label(scrollable, text="Enter Description:", font=("Arial", 12))
@@ -71,51 +57,55 @@ def show_new_quiz_screen(root):
                        font=text_font,
                        bg=root.cget("bg"))
     desc_box.pack(padx=20, fill="x")
-    desc_box.bind("<KeyRelease>", lambda event: auto_resize_textbox(desc_box, text_font))
+    desc_box.bind("<KeyRelease>", lambda event: logic.auto_resize_textbox(desc_box, text_font))
 
     # Button inside its own Frame with left-only padding
     button_frame = tk.Frame(scrollable)
     button_frame.pack(anchor="w", padx=(20, 0), pady=(10, 0))
+
+    #add button
     add_button = tk.Button(button_frame, text="+", width=1, height=1, command= lambda: add_button_onlcick(root))
     add_button.pack()
-
-    def collect_values(**kwargs):
-        return kwargs
     
-    def present_questions_loop(data, root):
+    def add_button_onlcick(root):
         
+
+        root_add = tk.Toplevel(root)
+        root_add.title("Add questions")
+        root_add.geometry("300x200")
+
+        label_ques = tk.Label(root_add, text="How many questions?: ", font=("Arial", 12))
+        label_ques.pack()
+        entry_ques = tk.Entry(root_add)
+        entry_ques.pack()
+
+        label_choice = tk.Label(root_add, text="How many choices per question?: ", font=("Arial", 12))
+        label_choice.pack()
+        entry_choice = tk.Entry(root_add)
+        entry_choice.pack()
         
-        def get_header():
-            header = []
-            header.append(title_box.get("1.0", "end-1c"))
-            header.append(desc_box.get("1.0", "end-1c"))
-            return header
-        def get_big_dick():
-            for i in range(ques_count):
-                questions_dick[f"question {i + 1}"] = {}
+        def on_accept():
+            questions = int(entry_ques.get())
+            choices = int(entry_choice.get())
+            present_questions_loop(questions=questions, choices=choices)
+            add_button.destroy()
+            root_add.destroy()
 
-                text = ques_text[i].get("1.0", "end-1c")
-                
-                questions_dick[f"question {i + 1}"]["text"] = text
-                questions_dick[f"question {i + 1}"]["options"] = {}
-
-                for c in range(choice_count):
-
-                    opt = ques_options[i][c].get("1.0", "end-1c")
-                    questions_dick[f"question {i + 1}"]["options"][f"option {c + 1}"] = opt
-            return questions_dick
-
+        tk.Button(root_add, text="Accept", command=lambda:  on_accept()).pack()
+        
+    def present_questions_loop(**data):
+        
         ques_count = data["questions"]
         choice_count = data["choices"]
 
-        questions_dick = {}
+        
         ques_text = []
         ques_options = []
         
 
         for i in range(ques_count):
             
-            ques_option = []
+           
 
             label = tk.Label(scrollable, text=f"-Question number {i + 1}:", font=("Arial", 12))
             label.pack(anchor="w", padx=(20, 0), pady=(20, 5))
@@ -129,12 +119,13 @@ def show_new_quiz_screen(root):
                                 font=text_font,
                                 bg=root.cget("bg"))
             present_ques_text.pack(padx=20, fill="x")
-            present_ques_text.bind("<KeyRelease>", lambda event, box=present_ques_text: auto_resize_textbox(box, text_font))
+            present_ques_text.bind("<KeyRelease>", lambda event, box=present_ques_text: logic.auto_resize_textbox(box, text_font))
             
             ques_text.append(present_ques_text)
 
-            
+             
             for c in range(choice_count):
+                ques_option = {}
                 label = tk.Label(scrollable, text=f".Option number {c + 1}:", font=("Arial", 12))
                 label.pack(anchor="w", padx=(20, 0), pady=(20, 5))
 
@@ -147,43 +138,33 @@ def show_new_quiz_screen(root):
                                     font=text_font,
                                     bg=root.cget("bg"))
                 present_choice_text.pack(padx=20, fill="x")
-                present_choice_text.bind("<KeyRelease>", lambda event, box=present_choice_text: auto_resize_textbox(box, text_font))
-                ques_option.append(present_choice_text)
+                present_choice_text.bind("<KeyRelease>", lambda event, box=present_choice_text: logic.auto_resize_textbox(box, text_font))
+
+                present_choice_point = tk.Text(scrollable,
+                                                height=1,
+                                                width=2,
+                                                bd=1,
+                                                relief="solid",
+                                                font=text_font,
+                                                bg=root.cget("bg"))
+                present_choice_point.pack()
+               
+
+                ques_option["text"] = present_choice_text
+                ques_option["point"] = present_choice_point
             ques_options.append(ques_option)
-        
-        Save_button = tk.Button(scrollable, text="Save", command= lambda: new_save_button())
-        Save_button.pack()
+
+        Save_button = tk.Button(scrollable, text="Save", command= lambda: logic.new_save_button(title_box.get("1.0", "end-1c"),
+                                                                                          desc_box.get("1.0", "end-1c"),
+                                                                                          logic.get_ques_text(ques_text),
+                                                                                          logic.get_options_box(ques_options)))
+        Save_button.pack()  
                 
-        def new_save_button():
-            header = get_header()
-            content = get_big_dick()
-            save_json(construct_dictionary(header, content))
+        
             
 
             
         
 
-    def add_button_onlcick(root):
-        
-        root_add = tk.Topleverl(root)
-        root_add.title("Add questions")
-        root_add.geometry("300x200")
-
-        label_ques = tk.Label(root_add, text="How many questions?: ", font=("Arial", 12))
-        label_ques.pack()
-        entry_ques = tk.Entry(root_add)
-        entry_ques.pack()
-
-        label_choice = tk.Label(root_add, text="How many choices per question?: ", font=("Arial", 12))
-        label_choice.pack()
-        entry_choice = tk.Entry(root_add)
-        entry_choice.pack()
-
-        tk.Button(root_add, text="Accept", command=lambda:  present_questions_loop(collect_values(questions = int(entry_ques.get()), choices = int(entry_choice.get())), root)).pack()
-        
-
-
-
-        
-
+    
 
