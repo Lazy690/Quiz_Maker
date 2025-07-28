@@ -1,0 +1,27 @@
+{
+    "title": "Citizen test",
+    "description": "this is a test to see if sujcet is in fact a citizen of Pippakistan",
+    "content": {
+        "question 1": {
+            "text": "Do you think the people of pippakistan are brilliant?",
+            "options": {
+                "option 1": "yes",
+                "option 2": "no"
+            }
+        },
+        "question 2": {
+            "text": "Do you think supreem leader Pipkin Pippa will bring this country to greatness once more?",
+            "options": {
+                "option 1": "yes",
+                "option 2": "no"
+            }
+        },
+        "question 3": {
+            "text": "Would you die for our supreem leader Pipkin Pippa?",
+            "options": {
+                "option 1": "yes",
+                "option 2": "yes"
+            }
+        }
+    }
+}

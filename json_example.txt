@@ -1,0 +1,22 @@
+{
+  "title": "Python Basics Quiz",
+  "description": "A quiz to test your understanding of basic Python concepts.",
+  "questions": [
+    {
+      "text": "What is the output of print(2 + 2)?",
+      "options": [
+        {"text": "3", "points": 0},
+        {"text": "4", "points": 1},
+        {"text": "5", "points": 0}
+      ]
+    },
+    {
+      "text": "Which keyword defines a function in Python?",
+      "options": [
+        {"text": "def", "points": 3},
+        {"text": "function", "points": 1},
+        {"text": "fun", "points": 0}
+      ]
+    }
+  ]
+}
