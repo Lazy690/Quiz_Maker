@@ -55,13 +55,34 @@ def get_options_box(ques_options):
 
             return options_list
 
-def construct_dictionary(title, description, content):
+def get_answer_text(answer_text):
+            answers_text_list = []
+            for i in range(len(answer_text)):
+                answers_text_list.append(answer_text[i].get("1.0", "end-1c"))
+            return answers_text_list
+
+def get_answer_score(answer_score):
+            answer_score_list = []  
+
+            for i in answer_score:  
+                score_list = {}
+                 
+                score_list["from"] = (i["from"].get("1.0", "end-1c")) 
+                score_list["to"] = (i["to"].get("1.0", "end-1c"))   
+                answer_score_list.append(score_list)  
+
+            return answer_score_list
+
+
+
+def construct_dictionary(title, description, questions, answers):
     package_json = {}
 
     package_json["title"] = title
     package_json["description"] = description
 
-    package_json["content"] = content
+    package_json["questions"] = questions
+    package_json["answers"] = answers
     return package_json
 
 def save_json(package):
@@ -76,16 +97,21 @@ def save_json(package):
 
     print(f"Quiz saved to {filepath}")
 
-def new_save_button(Title, Description, Questions, Options):
+def new_save_button(Title, Description, Questions, Options, Answers, Scores):
 
             title = Title
             description = Description
             questions = Questions
             options = Options
+            answers = Answers
+            scores = Scores
+
 
             questions_dick = {}
-            
-            def make_big_dick(questions, options):
+            answers_dick = {}
+
+            def make_questions_dick(questions, options):
+                #This makes the questions dictionary
                 for i in range(len(questions)):
                     questions_dick[f"question {i + 1}"] = {}
                     questions_dick[f"question {i + 1}"]["text"] = questions[i]
@@ -96,9 +122,21 @@ def new_save_button(Title, Description, Questions, Options):
                             questions_dick[f"question {i + 1}"]["options"][f"option {c + 1}"] = {}
                             questions_dick[f"question {i + 1}"]["options"][f"option {c + 1}"]["text"] = key["text"]
                             questions_dick[f"question {i + 1}"]["options"][f"option {c + 1}"]["point"] = key["point"]
-                return questions_dick
+                return questions_dick            
+            def make_answers_dick(answers, scores):
+                #This makes the answers dictionary
+                for i in range(len(answers)):
+                    answers_dick[f"answer {i + 1}"] = {}
+                    answers_dick[f"answer {i + 1}"]["text"] = answers[i]
+                    answers_dick[f"answer {i + 1}"]["conditions"] = {}
 
-            save_json(construct_dictionary(title, description, make_big_dick(questions, options)))  
+                    for c in range(len(scores)):
+                        for key in scores:
+                            answers_dick[f"answer {i + 1}"]["conditions"]["from"] = key["from"]
+                            answers_dick[f"answer {i + 1}"]["conditions"]["to"]   = key["to"]
+                return answers_dick
+
+            save_json(construct_dictionary(title, description, make_questions_dick(questions, options), make_answers_dick(answers, scores)))  
      
         
 

@@ -64,23 +64,21 @@ def show_new_quiz_screen(root):
     button_frame.pack(anchor="w", padx=(20, 0), pady=(10, 0))
 
     #add button
-    add_button = tk.Button(button_frame, text="+", width=1, height=1, command= lambda: add_button_onlcick(root))
+    add_button = tk.Button(button_frame, text="+", width=1, height=1, command= lambda: add_questions_button_onlcick(root))
     add_button.pack()
     
-    def add_button_onlcick(root):
+    def add_questions_button_onlcick(root):
         
 
         root_add = tk.Toplevel(root)
         root_add.title("Add questions")
         root_add.geometry("300x200")
-
-        label_ques = tk.Label(root_add, text="How many questions?: ", font=("Arial", 12))
-        label_ques.pack()
+        
+        tk.Label(root_add, text="How many questions?: ", font=("Arial", 12)).pack()
         entry_ques = tk.Entry(root_add)
         entry_ques.pack()
 
-        label_choice = tk.Label(root_add, text="How many choices per question?: ", font=("Arial", 12))
-        label_choice.pack()
+        tk.Label(root_add, text="How many choices per question?: ", font=("Arial", 12)).pack()
         entry_choice = tk.Entry(root_add)
         entry_choice.pack()
         
@@ -92,7 +90,7 @@ def show_new_quiz_screen(root):
             root_add.destroy()
 
         tk.Button(root_add, text="Accept", command=lambda:  on_accept()).pack()
-        
+
     def present_questions_loop(**data):
         
         ques_count = data["questions"]
@@ -153,13 +151,97 @@ def show_new_quiz_screen(root):
                 ques_option["text"] = present_choice_text
                 ques_option["point"] = present_choice_point
             ques_options.append(ques_option)
+        
+        #Add answers button
+        tk.Button(button_frame, text="+", width=1, height=1, command= lambda: add_answers_button_onlcick(root)).pack()
+        
+        
+        def add_answers_button_onlcick(root):
+        
+            root_add = tk.Toplevel(root)
+            root_add.title("Add questions")
+            root_add.geometry("300x200")
+            
+            tk.Label(root_add, text="Max Score: ", font=("Arial", 12)).pack()
+            entry_max_score = tk.Entry(root_add)
+            entry_max_score.pack()
 
-        Save_button = tk.Button(scrollable, text="Save", command= lambda: logic.new_save_button(title_box.get("1.0", "end-1c"),
-                                                                                          desc_box.get("1.0", "end-1c"),
-                                                                                          logic.get_ques_text(ques_text),
-                                                                                          logic.get_options_box(ques_options)))
-        Save_button.pack()  
+            tk.Label(root_add, text="How many answers?: ", font=("Arial", 12)).pack()
+            entry_answers = tk.Entry(root_add)
+            entry_answers.pack()
+
+            def on_accept():
+                max_score = int(entry_max_score.get())
+                answers = int(entry_answers.get())
+                present_answers_loop(max_score=max_score, answers=answers)
+                add_button.destroy()
+                root_add.destroy()
+
+            tk.Button(root_add, text="Accept", command=lambda:  on_accept()).pack()
+
+        def present_answers_loop(**data):
+            
+            max_score = data["max_score"]
+            answers = data["answers"]
+
+            
+            answer_text = []
+            answer_conditions = []
+            
+
+            for i in range(answers):
+                answer_score = {}
                 
+                tk.Label(scrollable, text=f"-Answer number {i + 1}:", font=("Arial", 12)).pack(anchor="w", padx=(20, 0), pady=(20, 5))
+                tk.Label(scrollable, text=f".From: ", font=("Arial", 12)).pack(anchor="w", padx=(20, 0), pady=(20, 5))
+                answer_from = tk.Text(scrollable,
+                                                    height=1,
+                                                    width=2,
+                                                    bd=1,
+                                                    relief="solid",
+                                                    font=text_font,
+                                                    bg=root.cget("bg"))
+                answer_from.pack()
+                tk.Label(scrollable, text=f".To: ", font=("Arial", 12)).pack(anchor="w", padx=(20, 0), pady=(20, 5))
+                answer_to = tk.Text(scrollable,
+                                                    height=1,
+                                                    width=2,
+                                                    bd=1,
+                                                    relief="solid",
+                                                    font=text_font,
+                                                    bg=root.cget("bg"))
+                answer_to.pack()
+
+                present_answer_text = tk.Text(scrollable,
+                                    height=50,
+                                    width=60,
+                                    wrap="word",
+                                    bd=1,
+                                    relief="solid",
+                                    font=text_font,
+                                    bg=root.cget("bg"))
+                present_answer_text.pack(padx=20, fill="x")
+                present_answer_text.bind("<KeyRelease>", lambda event, box=present_answer_text: logic.auto_resize_textbox(box, text_font))
+                
+                answer_score["from"] = answer_from
+                answer_score["to"] = answer_to
+                
+                answer_conditions.append(answer_score)
+                answer_text.append(present_answer_text)
+                
+
+
+            Save_button = tk.Button(scrollable, text="Save", command= lambda: logic.new_save_button(title_box.get("1.0", "end-1c"),
+                                                                                            desc_box.get("1.0", "end-1c"),
+                                                                                            logic.get_ques_text(ques_text),
+                                                                                            logic.get_options_box(ques_options),
+                                                                                            logic.get_answer_text(answer_text),
+                                                                                            logic.get_answer_score(answer_conditions)))
+            Save_button.pack()  
+
+
+
+
         
             
 
