@@ -41,24 +41,31 @@ def get_ques_text(ques_text):
             question_list = []
             for i in range(len(ques_text)):
                 question_list.append(ques_text[i].get("1.0", "end-1c"))
+            print(f"get ques text: {question_list}")
             return question_list
         
 def get_options_box(ques_options):
-            options_list = []  
+              
+            options_list = []
+            for i in ques_options: 
+                options_for_question_list = []
+                
+                for c in i:
+                    option = {}
+                    option["text"] = (c["text"].get("1.0", "end-1c"))
+                    option["point"] = (c["point"].get("1.0", "end-1c"))
+                    options_for_question_list.append(option) 
 
-            for i in ques_options:  
-                option_list = {}
-                 
-                option_list["text"] = (i["text"].get("1.0", "end-1c")) 
-                option_list["point"] = (i["point"].get("1.0", "end-1c"))   
-                options_list.append(option_list)  
-
+                options_list.append(options_for_question_list)
+                       
+            print(f"get ques options: {options_list}")
             return options_list
 
 def get_answer_text(answer_text):
             answers_text_list = []
             for i in range(len(answer_text)):
                 answers_text_list.append(answer_text[i].get("1.0", "end-1c"))
+            print(f"get answer text: {answers_text_list}")
             return answers_text_list
 
 def get_answer_score(answer_score):
@@ -70,7 +77,7 @@ def get_answer_score(answer_score):
                 score_list["from"] = (i["from"].get("1.0", "end-1c")) 
                 score_list["to"] = (i["to"].get("1.0", "end-1c"))   
                 answer_score_list.append(score_list)  
-
+            print(f"get answer score: {answer_score_list}")
             return answer_score_list
 
 
@@ -112,16 +119,20 @@ def new_save_button(Title, Description, Questions, Options, Answers, Scores):
 
             def make_questions_dick(questions, options):
                 #This makes the questions dictionary
+                
                 for i in range(len(questions)):
+
                     questions_dick[f"question {i + 1}"] = {}
                     questions_dick[f"question {i + 1}"]["text"] = questions[i]
                     questions_dick[f"question {i + 1}"]["options"] = {}
+                    opt_count = 0
+                    for option in options[i]:
+                        questions_dick[f"question {i + 1}"]["options"][f"option {opt_count + 1}"] = {}
+                        questions_dick[f"question {i + 1}"]["options"][f"option {opt_count + 1}"]["text"] = option["text"]
+                        questions_dick[f"question {i + 1}"]["options"][f"option {opt_count + 1}"]["point"] = option["point"]
+                        opt_count += 1
 
-                    for c in range(len(options)):
-                        for key in options:
-                            questions_dick[f"question {i + 1}"]["options"][f"option {c + 1}"] = {}
-                            questions_dick[f"question {i + 1}"]["options"][f"option {c + 1}"]["text"] = key["text"]
-                            questions_dick[f"question {i + 1}"]["options"][f"option {c + 1}"]["point"] = key["point"]
+                print(f"questions final dictionary: {questions_dick}")
                 return questions_dick            
             def make_answers_dick(answers, scores):
                 #This makes the answers dictionary
@@ -129,11 +140,13 @@ def new_save_button(Title, Description, Questions, Options, Answers, Scores):
                     answers_dick[f"answer {i + 1}"] = {}
                     answers_dick[f"answer {i + 1}"]["text"] = answers[i]
                     answers_dick[f"answer {i + 1}"]["conditions"] = {}
+                    
+                    score = scores[i]
 
-                    for c in range(len(scores)):
-                        for key in scores:
-                            answers_dick[f"answer {i + 1}"]["conditions"]["from"] = key["from"]
-                            answers_dick[f"answer {i + 1}"]["conditions"]["to"]   = key["to"]
+                    answers_dick[f"answer {i + 1}"]["conditions"]["from"] = score["from"]
+                    answers_dick[f"answer {i + 1}"]["conditions"]["to"] =   score["to"]
+
+                print(f"answers final dictionary: {answers_dick}")         
                 return answers_dick
 
             save_json(construct_dictionary(title, description, make_questions_dick(questions, options), make_answers_dick(answers, scores)))  

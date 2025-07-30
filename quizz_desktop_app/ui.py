@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import font as tkfont
 import logic
+import requests
 
 
 def start_ui():
@@ -16,7 +17,7 @@ def show_main_menu(root):
     button_new.pack()
     button_manage = tk.Button(root, text="Manage Quiz", width=25)
     button_manage.pack()
-    button_upload = tk.Button(root, text="Upload Quiz", width=25)
+    button_upload = tk.Button(root, text="Upload Quiz", width=25, command=lambda: show_upload_quiz_screen(root))
     button_upload.pack()
     button_exit = tk.Button(root, text="Exit", width=25, command=exit)
     button_exit.pack()
@@ -120,9 +121,10 @@ def show_new_quiz_screen(root):
             present_ques_text.bind("<KeyRelease>", lambda event, box=present_ques_text: logic.auto_resize_textbox(box, text_font))
             
             ques_text.append(present_ques_text)
-
+            ques_options_for_this_question = []
              
             for c in range(choice_count):
+               
                 ques_option = {}
                 label = tk.Label(scrollable, text=f".Option number {c + 1}:", font=("Arial", 12))
                 label.pack(anchor="w", padx=(20, 0), pady=(20, 5))
@@ -150,7 +152,10 @@ def show_new_quiz_screen(root):
 
                 ques_option["text"] = present_choice_text
                 ques_option["point"] = present_choice_point
-            ques_options.append(ques_option)
+                ques_options_for_this_question.append(ques_option)
+            ques_options.append(ques_options_for_this_question)
+        print(f"ui question text: {ques_text}")  
+        print(f"ui question options: {ques_options}")
         
         #Add answers button
         tk.Button(button_frame, text="+", width=1, height=1, command= lambda: add_answers_button_onlcick(root)).pack()
@@ -228,7 +233,8 @@ def show_new_quiz_screen(root):
                 
                 answer_conditions.append(answer_score)
                 answer_text.append(present_answer_text)
-                
+            print(f"ui answer text: {answer_text}")
+            print(f"ui answer conditions: {answer_conditions}")   
 
 
             Save_button = tk.Button(scrollable, text="Save", command= lambda: logic.new_save_button(title_box.get("1.0", "end-1c"),
@@ -239,7 +245,71 @@ def show_new_quiz_screen(root):
                                                                                             logic.get_answer_score(answer_conditions)))
             Save_button.pack()  
 
+def show_upload_quiz_screen(root):
+    for widget in root.winfo_children():
+        widget.destroy()
+    scrollable = logic.make_scrollable_frame(root)
 
+    text_font = tkfont.Font(family="Arial", size=11)
+
+    tk.Button(scrollable, text="Upload", command=lambda: upload()).pack()
+    
+    def upload():
+        quiz_data = {
+                        "title": "q",
+                        "description": "q",
+                        "questions": {
+                            "question 1": {
+                                "text": "2",
+                                "options": {
+                                    "option 1": {
+                                        "text": "2",
+                                        "point": "2"
+                                    },
+                                    "option 2": {
+                                        "text": "2",
+                                        "point": "2"
+                                    }
+                                }
+                            },
+                            "question 2": {
+                                "text": "2",
+                                "options": {
+                                    "option 1": {
+                                        "text": "2",
+                                        "point": "2"
+                                    },
+                                    "option 2": {
+                                        "text": "2",
+                                        "point": "2"
+                                    }
+                                }
+                            }
+                        },
+                        "answers": {
+                            "answer 1": {
+                                "text": "jihfdsuoaysd",
+                                "conditions": {
+                                    "from": "2",
+                                    "to": "2"
+                                }
+                            },
+                            "answer 2": {
+                                "text": "sdfkjbhsdgcfuoads",
+                                "conditions": {
+                                    "from": "2",
+                                    "to": "2"
+                                }
+                            }
+                        }
+                    }
+
+        response = requests.post("http://127.0.0.1:5000/submit-quiz", json=quiz_data)
+        if response.ok:
+           print("✅ Quiz successfully sent!")
+           print(response.json())
+        else:
+            print("❌ Failed to send quiz:", response.status_code, response.text)
 
 
         

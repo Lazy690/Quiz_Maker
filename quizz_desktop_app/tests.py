@@ -1,23 +1,13 @@
 import tkinter as tk
 
-entries = []
+entries = [{"text": "this is text 01", "point": "1"},
+           {"text": "this is text 02", "point": "0"}]
 
-def create_entries(root, count):
-    for _ in range(count):
-        entry = tk.Entry(root)
-        entry.pack()
-        entries.append(entry)
-
-def get_entry_values():
-    values = [e.get() for e in entries]
-    print(values)
-
-list = [
-    {"text": "Yes", "point": 2},
-    {"text": "no", "point": 0},
-    {"text": "maybe", "point": 1}]
-
-
-for i in list:
-    for c in i:
-        print(i[c])
+entries_dick = {}
+i = 0
+for key in entries:
+    entries_dick[f"entry {i + 1}"] = {}
+    entries_dick[f"entry {i + 1}"]["text"] = key["text"]
+    entries_dick[f"entry {i + 1}"]["point"] = key["point"]
+    i += 1
+print(entries_dick)
