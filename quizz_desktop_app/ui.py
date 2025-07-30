@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import font as tkfont
 import logic
 import requests
+import os
+import json
 
 
 def start_ui():
@@ -255,54 +257,17 @@ def show_upload_quiz_screen(root):
     tk.Button(scrollable, text="Upload", command=lambda: upload()).pack()
     
     def upload():
-        quiz_data = {
-                        "title": "q",
-                        "description": "q",
-                        "questions": {
-                            "question 1": {
-                                "text": "2",
-                                "options": {
-                                    "option 1": {
-                                        "text": "2",
-                                        "point": "2"
-                                    },
-                                    "option 2": {
-                                        "text": "2",
-                                        "point": "2"
-                                    }
-                                }
-                            },
-                            "question 2": {
-                                "text": "2",
-                                "options": {
-                                    "option 1": {
-                                        "text": "2",
-                                        "point": "2"
-                                    },
-                                    "option 2": {
-                                        "text": "2",
-                                        "point": "2"
-                                    }
-                                }
-                            }
-                        },
-                        "answers": {
-                            "answer 1": {
-                                "text": "jihfdsuoaysd",
-                                "conditions": {
-                                    "from": "2",
-                                    "to": "2"
-                                }
-                            },
-                            "answer 2": {
-                                "text": "sdfkjbhsdgcfuoads",
-                                "conditions": {
-                                    "from": "2",
-                                    "to": "2"
-                                }
-                            }
-                        }
-                    }
+        
+        def load_json(title):
+            # Get base path relative to script location
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            filepath = os.path.join(base_dir, "quizzes", "quiz_" + title + ".json")
+
+            with open(filepath, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            return data
+        quiz_data = load_json("Pippakistan_citizenship_test")
 
         response = requests.post("http://127.0.0.1:5000/submit-quiz", json=quiz_data)
         if response.ok:

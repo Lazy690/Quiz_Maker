@@ -1,1 +1,28 @@
- 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ quiz.title }}</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>{{ quiz.title }}</h1>
+    <p>{{ quiz.description }}</p>
+
+    <form action="/submit-answers" method="POST">
+        {% for q_key, q_value in quiz.questions.items() %}
+            <div style="margin-bottom: 20px;">
+                <p><strong>{{ loop.index }}. {{ q_value.text }}</strong></p>
+
+                {% for opt_key, opt_value in q_value.options.items() %}
+                    <label>
+                        <input type="radio" name="{{ q_key }}" value="{{ opt_value.point }}" required>
+                        {{ opt_value.text }}
+                    </label><br>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

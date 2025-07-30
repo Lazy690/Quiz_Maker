@@ -92,17 +92,25 @@ def construct_dictionary(title, description, questions, answers):
     package_json["answers"] = answers
     return package_json
 
+import os
+import json
+
 def save_json(package):
-
     filename = package["title"]
-    os.makedirs("quizzes", exist_ok=True)
 
-    filepath = os.path.join("quizzes", "quiz_" + filename + ".json")
+    # Get the absolute path to the current script's directory
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    quizzes_dir = os.path.join(base_dir, "quizzes")
+
+    os.makedirs(quizzes_dir, exist_ok=True)
+
+    filepath = os.path.join(quizzes_dir, "quiz_" + filename + ".json")
 
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(package, f, indent=4, ensure_ascii=False)
 
     print(f"Quiz saved to {filepath}")
+
 
 def new_save_button(Title, Description, Questions, Options, Answers, Scores):
 
