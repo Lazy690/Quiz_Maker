@@ -1,0 +1,80 @@
+{
+    "title": "Basic Knowledge Assessment",
+    "description": "A short test to evaluate general knowledge and critical thinking.",
+    "questions": {
+        "question 1": {
+            "text": "Which planet is known as the Red Planet?",
+            "options": {
+                "option 1": {
+                    "text": "Earth",
+                    "point": "0"
+                },
+                "option 2": {
+                    "text": "Mars",
+                    "point": "1"
+                },
+                "option 3": {
+                    "text": "Jupiter",
+                    "point": "2"
+                }
+            }
+        },
+        "question 2": {
+            "text": "What is the boiling point of water at sea level?",
+            "options": {
+                "option 1": {
+                    "text": "100°C",
+                    "point": "2"
+                },
+                "option 2": {
+                    "text": "0°C",
+                    "point": "0"
+                },
+                "option 3": {
+                    "text": "50°C",
+                    "point": "1"
+                }
+            }
+        },
+        "question 3": {
+            "text": "Who wrote '1984'?",
+            "options": {
+                "option 1": {
+                    "text": "George Orwell",
+                    "point": "2"
+                },
+                "option 2": {
+                    "text": "Aldous Huxley",
+                    "point": "1"
+                },
+                "option 3": {
+                    "text": "Ray Bradbury",
+                    "point": "0"
+                }
+            }
+        }
+    },
+    "answers": {
+        "answer 1": {
+            "text": "Needs improvement. Please review the basics.",
+            "conditions": {
+                "from": "0",
+                "to": "3"
+            }
+        },
+        "answer 2": {
+            "text": "Good job! You have a solid understanding.",
+            "conditions": {
+                "from": "4",
+                "to": "5"
+            }
+        },
+        "answer 3": {
+            "text": "Excellent! Top of the class.",
+            "conditions": {
+                "from": "6",
+                "to": "10"
+            }
+        }
+    }
+}

@@ -1,13 +1,14 @@
-import tkinter as tk
+def choose_from_list(options, prompt="Choose an option:"):
+    for i, option in enumerate(options, start=1):
+        print(f"{i}. {option}")
+    while True:
+        try:
+            choice = int(input(prompt + " "))
+            return options[choice - 1]
+        except (ValueError, IndexError):
+            print("Invalid choice. Try again.")
 
-entries = [{"text": "this is text 01", "point": "1"},
-           {"text": "this is text 02", "point": "0"}]
-
-entries_dick = {}
-i = 0
-for key in entries:
-    entries_dick[f"entry {i + 1}"] = {}
-    entries_dick[f"entry {i + 1}"]["text"] = key["text"]
-    entries_dick[f"entry {i + 1}"]["point"] = key["point"]
-    i += 1
-print(entries_dick)
+# Example usage
+fruits = ["apple", "banana", "cherry"]
+selected = choose_from_list(fruits)
+print("You selected:", selected)

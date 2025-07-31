@@ -1,0 +1,80 @@
+{
+    "title": "What Type of Thinker Are You?",
+    "description": "This quiz helps determine your natural thinking style based on your preferences.",
+    "questions": {
+        "question 1": {
+            "text": "When solving a problem, you usually:",
+            "options": {
+                "option 1": {
+                    "text": "Trust your gut instinct",
+                    "point": "0"
+                },
+                "option 2": {
+                    "text": "Analyze the data and facts",
+                    "point": "1"
+                },
+                "option 3": {
+                    "text": "Ask others for their opinions",
+                    "point": "2"
+                }
+            }
+        },
+        "question 2": {
+            "text": "How do you handle conflict?",
+            "options": {
+                "option 1": {
+                    "text": "Avoid it at all costs",
+                    "point": "0"
+                },
+                "option 2": {
+                    "text": "Confront it directly and calmly",
+                    "point": "2"
+                },
+                "option 3": {
+                    "text": "Try to find a compromise",
+                    "point": "1"
+                }
+            }
+        },
+        "question 3": {
+            "text": "Your desk is usually:",
+            "options": {
+                "option 1": {
+                    "text": "Organized and tidy",
+                    "point": "1"
+                },
+                "option 2": {
+                    "text": "Covered in useful clutter",
+                    "point": "2"
+                },
+                "option 3": {
+                    "text": "Where's my desk again?",
+                    "point": "0"
+                }
+            }
+        }
+    },
+    "answers": {
+        "answer 1": {
+            "text": "You are an intuitive thinker. You go with your instincts and see connections others may miss.",
+            "conditions": {
+                "from": "0",
+                "to": "3"
+            }
+        },
+        "answer 2": {
+            "text": "You are a balanced thinker. You combine logic with empathy and adapt well to different situations.",
+            "conditions": {
+                "from": "4",
+                "to": "5"
+            }
+        },
+        "answer 3": {
+            "text": "You are a structured thinker. You rely on data and organization to approach life with clarity.",
+            "conditions": {
+                "from": "6",
+                "to": "10"
+            }
+        }
+    }
+}

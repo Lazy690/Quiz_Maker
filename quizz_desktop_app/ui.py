@@ -14,10 +14,11 @@ def start_ui():
     root.mainloop()
     
 def show_main_menu(root):
-    
+    for widget in root.winfo_children():
+        widget.destroy()
     button_new = tk.Button(root, text="New Quiz", width=25, command=lambda: show_new_quiz_screen(root))
     button_new.pack()
-    button_manage = tk.Button(root, text="Manage Quiz", width=25)
+    button_manage = tk.Button(root, text="Manage Quiz", width=25, command=lambda: show_manage_quiz_screen(root))
     button_manage.pack()
     button_upload = tk.Button(root, text="Upload Quiz", width=25, command=lambda: show_upload_quiz_screen(root))
     button_upload.pack()
@@ -254,29 +255,86 @@ def show_upload_quiz_screen(root):
 
     text_font = tkfont.Font(family="Arial", size=11)
 
-    tk.Button(scrollable, text="Upload", command=lambda: upload()).pack()
-    
-    def upload():
-        
-        def load_json(title):
-            # Get base path relative to script location
-            base_dir = os.path.dirname(os.path.abspath(__file__))
-            filepath = os.path.join(base_dir, "quizzes", "quiz_" + title + ".json")
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    folder_path = os.path.join(base_dir, "quizzes")
+    file_list = [f for f in os.listdir(folder_path) if f.endswith('.json')]
 
-            with open(filepath, "r", encoding="utf-8") as f:
+    def selected_file(file_list, i):
+        selected_file = file_list[i]
+        return selected_file
+    
+    for i, file in enumerate(file_list):
+        file_str = file.replace(".json", "")
+        tk.Button(scrollable, text=file_str, command=lambda i=i: upload_ask_confirm(root, selected_file(file_list, i))).pack()
+
+    def upload_ask_confirm(root, selected):
+        
+        root_up_ask = tk.Toplevel(root)
+        root_up_ask.title("comfirm")
+        root_up_ask.geometry("300x200")
+            
+        tk.Label(root_up_ask, text="Do you comfirm this selection?", font=("Arial", 12)).pack()
+        tk.Label(root_up_ask, text=selected, font=("Arial", 12)).pack()
+        
+        def on_accept():
+            upload_json(selected)
+            root_up_ask.destroy()
+
+        tk.Button(root_up_ask, text="Accept", command=lambda:  on_accept()).pack()
+        tk.Button(root_up_ask, text="Cancel", command=lambda:  root_up_ask.destroy()).pack()
+
+
+    def upload_json(file):
+        title = file
+
+        def load_json(file):
+            # Get base path relative to script location
+            
+            selected_filepath_locaction = os.path.join(base_dir, "quizzes", file)
+
+            with open(selected_filepath_locaction, "r", encoding="utf-8") as f:
                 data = json.load(f)
 
             return data
-        quiz_data = load_json("Pippakistan_citizenship_test")
+        quiz_data = load_json(title)
 
         response = requests.post("http://127.0.0.1:5000/submit-quiz", json=quiz_data)
         if response.ok:
            print("✅ Quiz successfully sent!")
-           print(response.json())
+           print(file)
         else:
             print("❌ Failed to send quiz:", response.status_code, response.text)
+    #exit button
+    tk.Button(scrollable, text="back", command= lambda: show_main_menu(root)).pack()
 
+def show_manage_quiz_screen(root):
 
+    for widget in root.winfo_children():
+        widget.destroy()
+    scrollable = logic.make_scrollable_frame(root)
+
+    text_font = tkfont.Font(family="Arial", size=11)
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    folder_path = os.path.join(base_dir, "quizzes")
+    file_list = [f for f in os.listdir(folder_path) if f.endswith('.json')]
+
+    def selected_file(file_list, i):
+        selected_file = file_list[i]
+        return selected_file
+    
+    for i, file in enumerate(file_list):
+        file_str = file.replace(".json", "")
+        tk.Label(scrollable, text=file_str, font=("Arial", 12)).pack()
+        tk.Button(scrollable, text="edit", command=lambda i=i: manage_edit_screen(root, selected_file(file_list, i))).pack()
+        tk.Button(scrollable, text="delete", command=lambda i=i: manage_delete_confirm(root, selected_file(file_list, i))).pack()
+
+    def manage_delete_confirm(root, selected):
+        return 
+    def manage_edit_screen(root, selected):
+        return
+    #exit button
+    tk.Button(scrollable, text="back", command= lambda: show_main_menu(root)).pack() 
         
             
 

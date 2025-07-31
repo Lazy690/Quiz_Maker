@@ -1,76 +1,76 @@
 {
-  "title": "Pipakistan Citizen Test",
-  "description": "this is a test given to subjects after night raids to determine if they are an enemy of the revolution.",
+  "title": "Basic Knowledge Assessment",
+  "description": "A short test to evaluate general knowledge and critical thinking.",
   "questions": {
     "question 1": {
-      "text": "What do you think is the biggest threat to progress?",
+      "text": "Which planet is known as the Red Planet?",
       "options": {
         "option 1": {
-          "text": "slavery",
+          "text": "Earth",
           "point": "0"
         },
         "option 2": {
-          "text": "Kirchenism",
+          "text": "Mars",
           "point": "1"
         },
         "option 3": {
-          "text": "freedome",
+          "text": "Jupiter",
           "point": "2"
         }
       }
     },
     "question 2": {
-      "text": "Do you believe in supreem leader Pipkin pippa?",
+      "text": "What is the boiling point of water at sea level?",
       "options": {
         "option 1": {
-          "text": "no",
-          "point": "0"
+          "text": "100\u00b0C",
+          "point": "2"
         },
         "option 2": {
-          "text": "yes",
-          "point": "1"
+          "text": "0\u00b0C",
+          "point": "0"
         },
         "option 3": {
-          "text": "glory to Pikpin!!!",
-          "point": "2"
+          "text": "50\u00b0C",
+          "point": "1"
         }
       }
     },
     "question 3": {
-      "text": "Do you think violence is necissary to dismantle the western worlds encidious ideology? ",
+      "text": "Who wrote '1984'?",
       "options": {
         "option 1": {
-          "text": "no",
-          "point": "0"
+          "text": "George Orwell",
+          "point": "2"
         },
         "option 2": {
-          "text": "only as a last resort",
+          "text": "Aldous Huxley",
           "point": "1"
         },
         "option 3": {
-          "text": "absolutly!",
-          "point": "2"
+          "text": "Ray Bradbury",
+          "point": "0"
         }
       }
     }
   },
   "answers": {
     "answer 1": {
-      "text": "You will be detained and sent to be reeducated by the department of truth",
+      "text": "Needs improvement. Please review the basics.",
       "conditions": {
         "from": "0",
         "to": "3"
       }
     },
     "answer 2": {
-      "text": "You are to be survalanced by the state untill you provide 5 years millitary service.",
+      "text": "Good job! You have a solid understanding.",
       "conditions": {
         "from": "4",
         "to": "5"
       }
     },
     "answer 3": {
-      "text": "Glory to Pipenheim comrad!!!",
+      "text": "Excellent! Top of the class.",
       "conditions": {
         "from": "6",
         "to": "10"
