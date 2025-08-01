@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import font as tkfont
 import logic
+import uiFunctions
 import requests
 import os
 import json
@@ -332,7 +333,22 @@ def show_manage_quiz_screen(root):
     def manage_delete_confirm(root, selected):
         return 
     def manage_edit_screen(root, selected):
-        return
+        selected_filepath_locaction = os.path.join(base_dir, "quizzes", file)
+        def load_json(file, file_path):
+            # Get base path relative to script location
+            
+            
+
+            with open(selected_filepath_locaction, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            return data
+        
+        uiFunctions.present_edits_loop(scrollable, load_json(selected, selected_filepath_locaction), selected_filepath_locaction)     
+        
+            
+
+        
     #exit button
     tk.Button(scrollable, text="back", command= lambda: show_main_menu(root)).pack() 
         

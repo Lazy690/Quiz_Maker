@@ -2,6 +2,7 @@ import json
 import os
 import tkinter as tk
 
+#break down new_save_button into smaller fucntions
 def make_scrollable_frame(container):
     canvas = tk.Canvas(container)
     scrollbar = tk.Scrollbar(container, orient="vertical", command=canvas.yview)
@@ -92,8 +93,6 @@ def construct_dictionary(title, description, questions, answers):
     package_json["answers"] = answers
     return package_json
 
-import os
-import json
 
 def save_json(package):
     filename = package["title"]
@@ -111,6 +110,9 @@ def save_json(package):
 
     print(f"Quiz saved to {filepath}")
 
+def replace_json(package, filepath):
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(package, f, ensure_ascii=False, indent=4)
 
 def new_save_button(Title, Description, Questions, Options, Answers, Scores):
 
@@ -158,7 +160,55 @@ def new_save_button(Title, Description, Questions, Options, Answers, Scores):
                 return answers_dick
 
             save_json(construct_dictionary(title, description, make_questions_dick(questions, options), make_answers_dick(answers, scores)))  
+
+def edit_save_button(Title, Description, Questions, Options, Answers, Scores, location):
+
+            title = Title
+            description = Description
+            questions = Questions
+            options = Options
+            answers = Answers
+            scores = Scores
+
+
+            questions_dick = {}
+            answers_dick = {}
+
+            def make_questions_dick(questions, options):
+                #This makes the questions dictionary
+                
+                for i in range(len(questions)):
+
+                    questions_dick[f"question {i + 1}"] = {}
+                    questions_dick[f"question {i + 1}"]["text"] = questions[i]
+                    questions_dick[f"question {i + 1}"]["options"] = {}
+                    opt_count = 0
+                    for option in options[i]:
+                        questions_dick[f"question {i + 1}"]["options"][f"option {opt_count + 1}"] = {}
+                        questions_dick[f"question {i + 1}"]["options"][f"option {opt_count + 1}"]["text"] = option["text"]
+                        questions_dick[f"question {i + 1}"]["options"][f"option {opt_count + 1}"]["point"] = option["point"]
+                        opt_count += 1
+
+                print(f"questions final dictionary: {questions_dick}")
+                return questions_dick            
+            def make_answers_dick(answers, scores):
+                #This makes the answers dictionary
+                for i in range(len(answers)):
+                    answers_dick[f"answer {i + 1}"] = {}
+                    answers_dick[f"answer {i + 1}"]["text"] = answers[i]
+                    answers_dick[f"answer {i + 1}"]["conditions"] = {}
+                    
+                    score = scores[i]
+
+                    answers_dick[f"answer {i + 1}"]["conditions"]["from"] = score["from"]
+                    answers_dick[f"answer {i + 1}"]["conditions"]["to"] =   score["to"]
+
+                print(f"answers final dictionary: {answers_dick}")         
+                return answers_dick
+
+            save_json(construct_dictionary(title, description, make_questions_dick(questions, options), make_answers_dick(answers, scores), location))  
      
+        
         
 
 
