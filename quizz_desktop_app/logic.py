@@ -42,7 +42,7 @@ def get_ques_text(ques_text):
             question_list = []
             for i in range(len(ques_text)):
                 question_list.append(ques_text[i].get("1.0", "end-1c"))
-            print(f"get ques text: {question_list}")
+           
             return question_list
         
 def get_options_box(ques_options):
@@ -59,14 +59,14 @@ def get_options_box(ques_options):
 
                 options_list.append(options_for_question_list)
                        
-            print(f"get ques options: {options_list}")
+            
             return options_list
 
 def get_answer_text(answer_text):
             answers_text_list = []
             for i in range(len(answer_text)):
                 answers_text_list.append(answer_text[i].get("1.0", "end-1c"))
-            print(f"get answer text: {answers_text_list}")
+            
             return answers_text_list
 
 def get_answer_score(answer_score):
@@ -78,7 +78,7 @@ def get_answer_score(answer_score):
                 score_list["from"] = (i["from"].get("1.0", "end-1c")) 
                 score_list["to"] = (i["to"].get("1.0", "end-1c"))   
                 answer_score_list.append(score_list)  
-            print(f"get answer score: {answer_score_list}")
+           
             return answer_score_list
 
 def construct_dictionary(title, description, questions, options, answers, scores):

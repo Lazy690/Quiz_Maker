@@ -17,14 +17,36 @@ def start_ui():
 def show_main_menu(root):
     for widget in root.winfo_children():
         widget.destroy()
-    button_new = tk.Button(root, text="New Quiz", width=25, command=lambda: show_new_quiz_screen(root))
-    button_new.pack()
-    button_manage = tk.Button(root, text="Manage Quiz", width=25, command=lambda: show_manage_quiz_screen(root))
-    button_manage.pack()
-    button_upload = tk.Button(root, text="Upload Quiz", width=25, command=lambda: show_upload_quiz_screen(root))
-    button_upload.pack()
-    button_exit = tk.Button(root, text="Exit", width=25, command=exit)
-    button_exit.pack()
+
+    # Create main container
+    container = tk.Frame(root)
+    container.pack(fill="both", expand=True)
+
+    # Left frame for buttons
+    left_frame = tk.Frame(container)
+    left_frame.pack(side="left", padx=40, pady=40, anchor="n")
+
+    # Right frame for image placeholder (optional)
+    right_frame = tk.Frame(container, width=300, height=300, bg="lightgray")  # placeholder color
+    right_frame.pack(side="right", padx=40, pady=40, expand=True, fill="both")
+
+    # Custom tkfont for larger buttons
+    button_font = tkfont.Font(size=14)
+
+    button_new = tk.Button(left_frame, text="New Quiz", width=20, height=2, font=button_font,
+                           command=lambda: show_new_quiz_screen(root))
+    button_new.pack(pady=10)
+
+    button_manage = tk.Button(left_frame, text="Manage Quiz", width=20, height=2, font=button_font,
+                              command=lambda: show_manage_quiz_screen(root))
+    button_manage.pack(pady=10)
+
+    button_upload = tk.Button(left_frame, text="Upload Quiz", width=20, height=2, font=button_font,
+                              command=lambda: show_upload_quiz_screen(root))
+    button_upload.pack(pady=10)
+
+    button_exit = tk.Button(left_frame, text="Exit", width=20, height=2, font=button_font, command=exit)
+    button_exit.pack(pady=10)
 
 def show_new_quiz_screen(root):
     
@@ -34,35 +56,28 @@ def show_new_quiz_screen(root):
 
     text_font = tkfont.Font(family="Arial", size=11)
 
-    # Title
-    label = tk.Label(scrollable, text="Enter Title:", font=("Arial", 12))
-    label.pack(anchor="w", padx=(20, 0), pady=(20, 5))
+        # Frame for Title and Description
+    meta_frame = tk.LabelFrame(scrollable, text="Quiz Info", padx=10, pady=10, font=("Arial", 12, "bold"))
+    meta_frame.pack(padx=20, pady=(20, 10), fill="x")
 
-    title_box = tk.Text(scrollable,
-                        height=1,
-                        width=60,
-                        wrap="word",
-                        bd=1,
-                        relief="solid",
-                        font=text_font,
-                        bg=root.cget("bg"))
-    title_box.pack(padx=20, fill="x")
+    # Title
+    label = tk.Label(meta_frame, text="Enter Title:", font=("Arial", 11))
+    label.pack(anchor="w", pady=(0, 5))
+
+    title_box = tk.Text(meta_frame, height=1, width=60, wrap="word",
+                        bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
+    title_box.pack(fill="x")
     title_box.bind("<KeyRelease>", lambda event: logic.auto_resize_textbox(title_box, text_font))
 
     # Description
-    label = tk.Label(scrollable, text="Enter Description:", font=("Arial", 12))
-    label.pack(anchor="w", padx=(20, 0), pady=(20, 5))
+    label = tk.Label(meta_frame, text="Enter Description:", font=("Arial", 11))
+    label.pack(anchor="w", pady=(10, 5))
 
-    desc_box = tk.Text(scrollable,
-                       height=1,
-                       width=60,
-                       wrap="word",
-                       bd=1,
-                       relief="solid",
-                       font=text_font,
-                       bg=root.cget("bg"))
-    desc_box.pack(padx=20, fill="x")
+    desc_box = tk.Text(meta_frame, height=1, width=60, wrap="word",
+                       bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
+    desc_box.pack(fill="x")
     desc_box.bind("<KeyRelease>", lambda event: logic.auto_resize_textbox(desc_box, text_font))
+
 
     # Button inside its own Frame with left-only padding
     button_frame = tk.Frame(scrollable)
@@ -121,108 +136,98 @@ def show_new_quiz_screen(root):
 
         #render ques/opt
         for i in range(ques_count):
-            
-            label = tk.Label(scrollable, text=f"-Question number {i + 1}:", font=("Arial", 12))
-            label.pack(anchor="w", padx=(20, 0), pady=(20, 5))
+            # Box frame for each question
+            ques_frame = tk.LabelFrame(scrollable, text=f"Question {i + 1}", padx=10, pady=10, font=("Arial", 11, "bold"))
+            ques_frame.pack(padx=20, pady=15, fill="x", expand=True)
 
-            present_ques_text = tk.Text(scrollable,
-                                height=1,
-                                width=60,
-                                wrap="word",
-                                bd=1,
-                                relief="solid",
-                                font=text_font,
-                                bg=root.cget("bg"))
-            present_ques_text.pack(padx=20, fill="x")
+            # Question text
+            ques_label = tk.Label(ques_frame, text="Question Text:", font=("Arial", 11))
+            ques_label.pack(anchor="w", pady=(0, 5))
+
+            present_ques_text = tk.Text(ques_frame, height=1, width=60, wrap="word",
+                                        bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
+            present_ques_text.pack(fill="x")
             present_ques_text.bind("<KeyRelease>", lambda event, box=present_ques_text: logic.auto_resize_textbox(box, text_font))
-            
             ques_text.append(present_ques_text)
-            ques_options_for_this_question = []
-             
-            for c in range(choice_count):
-               
-                ques_option = {}
-                label = tk.Label(scrollable, text=f".Option number {c + 1}:", font=("Arial", 12))
-                label.pack(anchor="w", padx=(20, 0), pady=(20, 5))
 
-                present_choice_text = tk.Text(scrollable,
-                                    height=1,
-                                    width=60,
-                                    wrap="word",
-                                    bd=1,
-                                    relief="solid",
-                                    font=text_font,
-                                    bg=root.cget("bg"))
-                present_choice_text.pack(padx=20, fill="x")
+            ques_options_for_this_question = []
+
+            for c in range(choice_count):
+                option_frame = tk.Frame(ques_frame)
+                option_frame.pack(fill="x", padx=20, pady=8)
+
+                label = tk.Label(option_frame, text=f"Option {c + 1}:", font=("Arial", 10))
+                label.grid(row=0, column=0, sticky="w")
+
+                present_choice_text = tk.Text(option_frame, height=1, width=50, wrap="word",
+                                            bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
+                present_choice_text.grid(row=0, column=1, padx=(10, 0), sticky="w")
                 present_choice_text.bind("<KeyRelease>", lambda event, box=present_choice_text: logic.auto_resize_textbox(box, text_font))
 
-                present_choice_point = tk.Text(scrollable,
-                                                height=1,
-                                                width=2,
-                                                bd=1,
-                                                relief="solid",
-                                                font=text_font,
-                                                bg=root.cget("bg"))
-                present_choice_point.pack()
-               
+                # Points field with label
+                point_label = tk.Label(option_frame, text="Points:", font=("Arial", 10))
+                point_label.grid(row=0, column=2, padx=(20, 5), sticky="e")
 
-                ques_option["text"] = present_choice_text
-                ques_option["point"] = present_choice_point
+                present_choice_point = tk.Text(option_frame, height=1, width=4,
+                                            bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
+                present_choice_point.grid(row=0, column=3, sticky="w")
+
+                ques_option = {
+                    "text": present_choice_text,
+                    "point": present_choice_point
+                }
                 ques_options_for_this_question.append(ques_option)
+
             ques_options.append(ques_options_for_this_question)
+
         
         #render answer/points
         for i in range(answers):
             answer_score = {}
-                
-            tk.Label(scrollable, text=f"-Answer number {i + 1}:", font=("Arial", 12)).pack(anchor="w", padx=(20, 0), pady=(20, 5))
-            tk.Label(scrollable, text=f".From: ", font=("Arial", 12)).pack(anchor="w", padx=(20, 0), pady=(20, 5))
-            answer_from = tk.Text(scrollable,
-                                            height=1,
-                                            width=2,
-                                            bd=1,
-                                            relief="solid",
-                                            font=text_font,
-                                            bg=root.cget("bg"))
-            answer_from.pack()
-            tk.Label(scrollable, text=f".To: ", font=("Arial", 12)).pack(anchor="w", padx=(20, 0), pady=(20, 5))
-            answer_to = tk.Text(scrollable,
-                                                    height=1,
-                                                    width=2,
-                                                    bd=1,
-                                                    relief="solid",
-                                                    font=text_font,
-                                                    bg=root.cget("bg"))
-            answer_to.pack()
 
-            present_answer_text = tk.Text(scrollable,
-                                    height=50,
-                                    width=60,
-                                    wrap="word",
-                                    bd=1,
-                                    relief="solid",
-                                    font=text_font,
-                                    bg=root.cget("bg"))
-            present_answer_text.pack(padx=20, fill="x")
+            # Outer frame for each answer block
+            answer_frame = tk.LabelFrame(scrollable, text=f"Answer {i + 1}", padx=10, pady=10, font=("Arial", 11, "bold"))
+            answer_frame.pack(padx=20, pady=15, fill="x", expand=True)
+
+            # Frame for "From" and "To" fields on the same row
+            range_frame = tk.Frame(answer_frame)
+            range_frame.pack(anchor="w", pady=(0, 10))
+
+            # From
+            tk.Label(range_frame, text="From:", font=("Arial", 10)).grid(row=0, column=0, padx=(0, 5), sticky="w")
+            answer_from = tk.Text(range_frame, height=1, width=4, bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
+            answer_from.grid(row=0, column=1, padx=(0, 20), sticky="w")
+
+            # To
+            tk.Label(range_frame, text="To:", font=("Arial", 10)).grid(row=0, column=2, padx=(0, 5), sticky="w")
+            answer_to = tk.Text(range_frame, height=1, width=4, bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
+            answer_to.grid(row=0, column=3, sticky="w")
+
+            # Answer explanation text box
+            tk.Label(answer_frame, text="Answer Text:", font=("Arial", 10)).pack(anchor="w", padx=(0, 5), pady=(0, 5))
+            present_answer_text = tk.Text(answer_frame, height=2, width=60, wrap="word",
+                                        bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
+            present_answer_text.pack(padx=10, fill="x")
             present_answer_text.bind("<KeyRelease>", lambda event, box=present_answer_text: logic.auto_resize_textbox(box, text_font))
-                
+
             answer_score["from"] = answer_from
             answer_score["to"] = answer_to
-                
+
             answer_conditions.append(answer_score)
             answer_text.append(present_answer_text)
-            print(f"ui answer text: {answer_text}")
-            print(f"ui answer conditions: {answer_conditions}")   
+   
 
 
-            Save_button = tk.Button(scrollable, text="Save", command= lambda: logic.new_save_button(title_box.get("1.0", "end-1c"),
+        Save_button = tk.Button(scrollable, text="Save", command= lambda: logic.new_save_button(title_box.get("1.0", "end-1c"),
                                                                                             desc_box.get("1.0", "end-1c"),
                                                                                             logic.get_ques_text(ques_text),
                                                                                             logic.get_options_box(ques_options),
                                                                                             logic.get_answer_text(answer_text),
                                                                                             logic.get_answer_score(answer_conditions)))
-            Save_button.pack()  
-
+        Save_button.pack()  
+    #exit button
+    tk.Button(scrollable, text="back", command= lambda: show_main_menu(root)).pack()
+    
 def show_upload_quiz_screen(root):
     for widget in root.winfo_children():
         widget.destroy()
@@ -240,13 +245,30 @@ def show_upload_quiz_screen(root):
     
     for i, file in enumerate(file_list):
         file_str = file.replace(".json", "")
-        tk.Button(scrollable, text=file_str, command=lambda i=i: upload_ask_confirm(root, selected_file(file_list, i))).pack()
+
+        # Frame for each file row
+        file_frame = tk.Frame(scrollable, pady=5, padx=10, bd=1, relief="groove")
+        file_frame.pack(pady=10)
+
+        # Center the contents of the frame
+        inner_frame = tk.Frame(file_frame)
+        inner_frame.pack()
+
+        # File name label
+        name_label = tk.Label(inner_frame, text=file_str, font=("Arial", 12))
+        name_label.pack(side="left", padx=(5, 20))
+
+        # Upload button
+        upload_btn = tk.Button(inner_frame, text="Upload", width=10,
+                            command=lambda i=i: upload_ask_confirm(root, selected_file(file_list, i)))
+        upload_btn.pack(side="left")
+
 
     def upload_ask_confirm(root, selected):
         
         root_up_ask = tk.Toplevel(root)
         root_up_ask.title("comfirm")
-        root_up_ask.geometry("300x200")
+        root_up_ask.geometry("300x150")
             
         tk.Label(root_up_ask, text="Do you comfirm this selection?", font=("Arial", 12)).pack()
         tk.Label(root_up_ask, text=selected, font=("Arial", 12)).pack()
@@ -299,9 +321,26 @@ def show_manage_quiz_screen(root):
     
     for i, file in enumerate(file_list):
         file_str = file.replace(".json", "")
-        tk.Label(scrollable, text=file_str, font=("Arial", 12)).pack()
-        tk.Button(scrollable, text="edit", command=lambda i=i: manage_edit_screen(root, selected_file(file_list, i))).pack()
-        tk.Button(scrollable, text="delete", command=lambda i=i: manage_delete_confirm(root, selected_file(file_list, i))).pack()
+
+        # Frame for each file row
+        file_frame = tk.Frame(scrollable, pady=5, padx=10, bd=1, relief="groove")
+        file_frame.pack(fill="x", padx=20, pady=10)
+
+        # File name label
+        name_label = tk.Label(file_frame, text=file_str, font=("Arial", 12))
+        name_label.pack(side="left", padx=(5, 20))
+
+        # Button group on the right
+        button_frame = tk.Frame(file_frame)
+        button_frame.pack(side="right")
+
+        edit_btn = tk.Button(button_frame, text="Edit", width=8,
+                             command=lambda i=i: manage_edit_screen(root, selected_file(file_list, i)))
+        edit_btn.pack(side="left", padx=(0, 5))
+
+        delete_btn = tk.Button(button_frame, text="Delete", width=8,
+                               command=lambda i=i: manage_delete_confirm(root, selected_file(file_list, i)))
+        delete_btn.pack(side="left")
 
     def manage_delete_confirm(root, selected):
         selected_filepath_locaction = os.path.join(base_dir, "quizzes", selected)
@@ -327,159 +366,99 @@ def show_manage_quiz_screen(root):
         scrollable = logic.make_scrollable_frame(root)
         text_font = tkfont.Font(family="Arial", size=11)
 
-        # Title
-        tk.Label(scrollable, text="Edit Title:", font=("Arial", 12)).pack(anchor="w", padx=(20, 0), pady=(20, 5))
-       
+        # -- Title & Description Section --
+        meta_frame = tk.LabelFrame(scrollable, text="Quiz Info", padx=10, pady=10, font=("Arial", 12, "bold"))
+        meta_frame.pack(padx=20, pady=(20, 10), fill="x")
 
-        title_box = tk.Text(scrollable,
-                            height=1,
-                            width=60,
-                            wrap="word",
-                            bd=1,
-                            relief="solid",
-                            font=text_font,
-                            bg=root.cget("bg"))
-        #insert default
+        # Title
+        tk.Label(meta_frame, text="Edit Title:", font=("Arial", 11)).pack(anchor="w", pady=(0, 5))
+        title_box = tk.Text(meta_frame, height=1, width=60, wrap="word", bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
         title_box.insert("1.0", json["title"])
-        title_box.pack(padx=20, fill="x")
+        title_box.pack(fill="x")
         title_box.bind("<KeyRelease>", lambda event: logic.auto_resize_textbox(title_box, text_font))
 
         # Description
-        tk.Label(scrollable, text="Enter Description:", font=("Arial", 12)).pack(anchor="w", padx=(20, 0), pady=(20, 5))
-        
-
-        desc_box = tk.Text(scrollable,
-                        height=1,
-                        width=60,
-                        wrap="word",
-                        bd=1,
-                        relief="solid",
-                        font=text_font,
-                        bg=root.cget("bg"))
-        #insert default
+        tk.Label(meta_frame, text="Edit Description:", font=("Arial", 11)).pack(anchor="w", pady=(10, 5))
+        desc_box = tk.Text(meta_frame, height=1, width=60, wrap="word", bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
         desc_box.insert("1.0", json["description"])
-        desc_box.pack(padx=20, fill="x")
+        desc_box.pack(fill="x")
         desc_box.bind("<KeyRelease>", lambda event: logic.auto_resize_textbox(desc_box, text_font))
 
-        ##render lists section##
-
+        # -- Parse counts --
         ques_count = len(json["questions"])
         choice_count = len(json["questions"]["question 1"]["options"])
         answers = len(json["answers"])
 
-        #render ques/opt
-
         ques_text = []
         ques_options = []
-        
         answer_text = []
         answer_conditions = []
 
+        # -- Questions Section --
         for i in range(ques_count):
-            
-            label = tk.Label(scrollable, text=f"-Question number {i + 1}:", font=("Arial", 12))
-            label.pack(anchor="w", padx=(20, 0), pady=(20, 5))
+            q_frame = tk.LabelFrame(scrollable, text=f"Question {i + 1}", padx=10, pady=10, font=("Arial", 11, "bold"))
+            q_frame.pack(padx=20, pady=15, fill="x", expand=True)
 
-            present_ques_text = tk.Text(scrollable,
-                                height=1,
-                                width=60,
-                                wrap="word",
-                                bd=1,
-                                relief="solid",
-                                font=text_font,
-                                bg=root.cget("bg"))
-            #insert default
+            # Question Text
+            tk.Label(q_frame, text="Question Text:", font=("Arial", 10)).pack(anchor="w", pady=(0, 5))
+            present_ques_text = tk.Text(q_frame, height=1, width=60, wrap="word", bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
             present_ques_text.insert("1.0", json["questions"][f"question {i + 1}"]["text"])
-            present_ques_text.pack(padx=20, fill="x")
+            present_ques_text.pack(fill="x")
             present_ques_text.bind("<KeyRelease>", lambda event, box=present_ques_text: logic.auto_resize_textbox(box, text_font))
-            
             ques_text.append(present_ques_text)
-            ques_options_for_this_question = []
-             
-            for c in range(choice_count):
-               
-                ques_option = {}
-                label = tk.Label(scrollable, text=f".Option number {c + 1}:", font=("Arial", 12))
-                label.pack(anchor="w", padx=(20, 0), pady=(20, 5))
 
-                present_choice_text = tk.Text(scrollable,
-                                    height=1,
-                                    width=60,
-                                    wrap="word",
-                                    bd=1,
-                                    relief="solid",
-                                    font=text_font,
-                                    bg=root.cget("bg"))
-                present_choice_text.pack(padx=20, fill="x")
-                #insert default
+            # Options
+            ques_options_for_this_question = []
+            for c in range(choice_count):
+                opt_frame = tk.Frame(q_frame)
+                opt_frame.pack(fill="x", padx=20, pady=8)
+
+                tk.Label(opt_frame, text=f"Option {c + 1}:", font=("Arial", 10)).grid(row=0, column=0, sticky="w")
+                present_choice_text = tk.Text(opt_frame, height=1, width=50, wrap="word", bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
+                present_choice_text.grid(row=0, column=1, padx=(10, 0), sticky="w")
                 present_choice_text.insert("1.0", json["questions"][f"question {i + 1}"]["options"][f"option {c + 1}"]["text"])
                 present_choice_text.bind("<KeyRelease>", lambda event, box=present_choice_text: logic.auto_resize_textbox(box, text_font))
 
-                present_choice_point = tk.Text(scrollable,
-                                                height=1,
-                                                width=2,
-                                                bd=1,
-                                                relief="solid",
-                                                font=text_font,
-                                                bg=root.cget("bg"))
-                #insert default
+                tk.Label(opt_frame, text="Points:", font=("Arial", 10)).grid(row=0, column=2, padx=(20, 5), sticky="e")
+                present_choice_point = tk.Text(opt_frame, height=1, width=4, bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
+                present_choice_point.grid(row=0, column=3, sticky="w")
                 present_choice_point.insert("1.0", json["questions"][f"question {i + 1}"]["options"][f"option {c + 1}"]["point"])
-                present_choice_point.pack()
-               
 
-                ques_option["text"] = present_choice_text
-                ques_option["point"] = present_choice_point
+                ques_option = {"text": present_choice_text, "point": present_choice_point}
                 ques_options_for_this_question.append(ques_option)
-            ques_options.append(ques_options_for_this_question)
-        
-        #render answer/points
-        for i in range(answers):
-            answer_score = {}
-                
-            tk.Label(scrollable, text=f"-Answer number {i + 1}:", font=("Arial", 12)).pack(anchor="w", padx=(20, 0), pady=(20, 5))
-            tk.Label(scrollable, text=f".From: ", font=("Arial", 12)).pack(anchor="w", padx=(20, 0), pady=(20, 5))
-            answer_from = tk.Text(scrollable,
-                                            height=1,
-                                            width=2,
-                                            bd=1,
-                                            relief="solid",
-                                            font=text_font,
-                                            bg=root.cget("bg"))
-            #insert default
-            answer_from.insert("1.0", json["answers"][f"answer {i + 1}"]["conditions"]["from"])
-            answer_from.pack()
-            tk.Label(scrollable, text=f".To: ", font=("Arial", 12)).pack(anchor="w", padx=(20, 0), pady=(20, 5))
-            answer_to = tk.Text(scrollable,
-                                                    height=1,
-                                                    width=2,
-                                                    bd=1,
-                                                    relief="solid",
-                                                    font=text_font,
-                                                    bg=root.cget("bg"))
-            #insert default
-            answer_to.insert("1.0", json["answers"][f"answer {i + 1}"]["conditions"]["to"])
-            answer_to.pack()
 
-            present_answer_text = tk.Text(scrollable,
-                                    height=50,
-                                    width=60,
-                                    wrap="word",
-                                    bd=1,
-                                    relief="solid",
-                                    font=text_font,
-                                    bg=root.cget("bg"))
-            #insert default
+            ques_options.append(ques_options_for_this_question)
+
+        # -- Answers Section --
+        for i in range(answers):
+            a_frame = tk.LabelFrame(scrollable, text=f"Answer {i + 1}", padx=10, pady=10, font=("Arial", 11, "bold"))
+            a_frame.pack(padx=20, pady=15, fill="x", expand=True)
+
+            range_frame = tk.Frame(a_frame)
+            range_frame.pack(anchor="w", pady=(0, 10))
+
+            tk.Label(range_frame, text="From:", font=("Arial", 10)).grid(row=0, column=0, padx=(0, 5), sticky="w")
+            answer_from = tk.Text(range_frame, height=1, width=4, bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
+            answer_from.grid(row=0, column=1, padx=(0, 20), sticky="w")
+            answer_from.insert("1.0", json["answers"][f"answer {i + 1}"]["conditions"]["from"])
+
+            tk.Label(range_frame, text="To:", font=("Arial", 10)).grid(row=0, column=2, padx=(0, 5), sticky="w")
+            answer_to = tk.Text(range_frame, height=1, width=4, bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
+            answer_to.grid(row=0, column=3, sticky="w")
+            answer_to.insert("1.0", json["answers"][f"answer {i + 1}"]["conditions"]["to"])
+
+            # Answer Text
+            tk.Label(a_frame, text="Answer Text:", font=("Arial", 10)).pack(anchor="w", padx=(0, 5), pady=(0, 5))
+            present_answer_text = tk.Text(a_frame, height=2, width=60, wrap="word", bd=1, relief="solid", font=text_font, bg=root.cget("bg"))
             present_answer_text.insert("1.0", json["answers"][f"answer {i + 1}"]["text"])
-            present_answer_text.pack(padx=20, fill="x")
+            present_answer_text.pack(padx=10, fill="x")
             present_answer_text.bind("<KeyRelease>", lambda event, box=present_answer_text: logic.auto_resize_textbox(box, text_font))
-                
-            answer_score["from"] = answer_from
-            answer_score["to"] = answer_to
-                
+
+            answer_score = {"from": answer_from, "to": answer_to}
             answer_conditions.append(answer_score)
             answer_text.append(present_answer_text)
-            print(f"ui answer text: {answer_text}")
-            print(f"ui answer conditions: {answer_conditions}")   
+
+               
 
 
         Save_button = tk.Button(scrollable, text="Save edits", command= lambda: uiFunctions.ask_edit_permission(root,

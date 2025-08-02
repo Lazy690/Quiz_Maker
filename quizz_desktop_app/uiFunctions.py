@@ -8,7 +8,7 @@ def ask_edit_permission(root, title, description, questions, options, answers, s
         #create window
         root_ask_per = tk.Toplevel(root)
         root_ask_per.title("Ask if sure")
-        root_ask_per.geometry("300x250")
+        root_ask_per.geometry("300x100")
         
         tk.Label(root_ask_per, text="Are you sure you want to save edits?", font=("Arial", 12)).pack()
 
@@ -25,7 +25,7 @@ def ask_delete_permission(root, path):
         #create window
         root_ask_per = tk.Toplevel(root)
         root_ask_per.title("Ask if sure")
-        root_ask_per.geometry("300x250")
+        root_ask_per.geometry("300x100")
         
         tk.Label(root_ask_per, text="Are you sure you want delete this file?", font=("Arial", 12)).pack()
 
@@ -36,3 +36,4 @@ def ask_delete_permission(root, path):
             root_ask_per.destroy()
         def on_cancel():
             root_ask_per.destroy()
+    
