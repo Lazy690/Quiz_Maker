@@ -1,6 +1,8 @@
 import json
 import os
 import tkinter as tk
+from tkinter import messagebox
+
 
 #break down new_save_button into smaller fucntions
 def make_scrollable_frame(container):
@@ -58,8 +60,7 @@ def get_options_box(ques_options):
                     options_for_question_list.append(option) 
 
                 options_list.append(options_for_question_list)
-                       
-            
+               
             return options_list
 
 def get_answer_text(answer_text):
@@ -165,3 +166,24 @@ def delete_json(path):
         os.remove(path)
     else:
          print("file doesnt exist")
+
+##Validate input##
+
+def show_error(root, error): 
+     #create window
+        root_error = tk.Toplevel(root)
+        root_error.title("error")
+        root_error.geometry("300x250")
+        
+        tk.Label(error, text=error, font=("Arial", 12)).pack()
+        
+        def on_accept():
+            root_error.destroy()
+
+        tk.Button(root_error, text="back", command=lambda:  on_accept()).pack()
+     
+def validate_new(title, description, questions, options, answers, scores, max_score):
+    if sum(options["point"]) > max_score:
+         messagebox.showwarning("Invalid inputs","Sum of the points cannot exede the max score") 
+    else:
+         return new_save_button(title, description, questions, options, answers, scores)

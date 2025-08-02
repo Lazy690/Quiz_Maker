@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import font as tkfont
+from PIL import Image, ImageTk
 import logic
 import uiFunctions
 import requests
@@ -10,6 +11,10 @@ import json
 def start_ui():
     root = tk.Tk()
     root.title("Quiz Maker ver-0.1")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    icon_path = os.path.join(script_dir, "assets", "quiz_maker_icon_img_01.png")
+    icon = tk.PhotoImage(file=icon_path)
+    root.iconphoto(True, icon)
     show_main_menu(root)
     root.geometry("800x600")
     root.mainloop()
@@ -18,19 +23,29 @@ def show_main_menu(root):
     for widget in root.winfo_children():
         widget.destroy()
 
-    # Create main container
     container = tk.Frame(root)
     container.pack(fill="both", expand=True)
 
-    # Left frame for buttons
     left_frame = tk.Frame(container)
     left_frame.pack(side="left", padx=40, pady=40, anchor="n")
 
-    # Right frame for image placeholder (optional)
-    right_frame = tk.Frame(container, width=300, height=300, bg="lightgray")  # placeholder color
+    right_frame = tk.Frame(container, bg="lightgray")
     right_frame.pack(side="right", padx=40, pady=40, expand=True, fill="both")
 
-    # Custom tkfont for larger buttons
+    # Get the directory of the currently running script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    img_path = os.path.join(script_dir, "assets", "quiz_maker_menu_img_02.png")
+
+    # Load and place image in right_frame
+    img = Image.open(img_path)
+    img = img.resize((300, 300), Image.Resampling.LANCZOS)
+    img_tk = ImageTk.PhotoImage(img)
+
+    img_label = tk.Label(right_frame, image=img_tk, bg="lightgray")
+    img_label.image = img_tk  # Keep a reference!
+    img_label.place(relx=0.5, rely=0.5, anchor="center")  # Center the image
+
+    # Buttons (unchanged)
     button_font = tkfont.Font(size=14)
 
     button_new = tk.Button(left_frame, text="New Quiz", width=20, height=2, font=button_font,
@@ -47,6 +62,12 @@ def show_main_menu(root):
 
     button_exit = tk.Button(left_frame, text="Exit", width=20, height=2, font=button_font, command=exit)
     button_exit.pack(pady=10)
+
+    contact_frame = tk.Frame(root, bg="lightgray")
+    contact_frame.pack(side="bottom", pady=5)
+
+    tk.Label(contact_frame, text="Developed by Victor Espinha", bg="lightgray", font=("Arial", 10)).pack()
+    tk.Label(contact_frame, text="📞 +244 936 223 426  |  ✉️ victorespinha204@gmail.com", bg="lightgray", font=("Arial", 9)).pack()
 
 def show_new_quiz_screen(root):
     
@@ -86,7 +107,10 @@ def show_new_quiz_screen(root):
     #add button
     add_button = tk.Button(button_frame, text="+", width=1, height=1, command= lambda: add_questions_button_onlcick(root))
     add_button.pack()
-    
+
+    #exit button
+    exit = tk.Button(scrollable, text="back", command= lambda: show_main_menu(root))
+    exit.pack()
     def add_questions_button_onlcick(root):
         
         #create window
@@ -117,6 +141,7 @@ def show_new_quiz_screen(root):
             answers = int(entry_answers.get())
             present_questions_loop(questions=questions, choices=choices, max_score=max_score, answers=answers)
             add_button.destroy()
+            exit.destroy()
             root_add.destroy()
 
         tk.Button(root_add, text="Accept", command=lambda:  on_accept()).pack()
@@ -217,16 +242,19 @@ def show_new_quiz_screen(root):
             answer_text.append(present_answer_text)
    
 
-
-        Save_button = tk.Button(scrollable, text="Save", command= lambda: logic.new_save_button(title_box.get("1.0", "end-1c"),
+                                                                          
+        Save_button = tk.Button(scrollable, text="Save", command= lambda: logic.validate_new(title_box.get("1.0", "end-1c"),
                                                                                             desc_box.get("1.0", "end-1c"),
                                                                                             logic.get_ques_text(ques_text),
                                                                                             logic.get_options_box(ques_options),
                                                                                             logic.get_answer_text(answer_text),
-                                                                                            logic.get_answer_score(answer_conditions)))
-        Save_button.pack()  
-    #exit button
-    tk.Button(scrollable, text="back", command= lambda: show_main_menu(root)).pack()
+                                                                                            logic.get_answer_score(answer_conditions),
+                                                                                            max_score))
+        Save_button.pack()
+        #exit button
+        exit = tk.Button(scrollable, text="back", command= lambda: show_main_menu(root))
+        exit.pack()  
+    
     
 def show_upload_quiz_screen(root):
     for widget in root.winfo_children():
@@ -473,11 +501,3 @@ def show_manage_quiz_screen(root):
         
         #exit button
         tk.Button(scrollable, text="back", command= lambda: show_main_menu(root)).pack() 
-        
-            
-
-            
-        
-
-    
-
