@@ -1,6 +1,10 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 import os
 import json
+from dotenv import load_dotenv
+
+load_dotenv()  # Load .env variables
+UPLOAD_KEY = os.getenv("UPLOAD_KEY")
 
 app = Flask(__name__)
 QUIZ_DIR = "quizzes"
@@ -12,13 +16,21 @@ def home():
 
 @app.route("/submit-quiz", methods=["POST"])
 def submit_quiz():
+    # Check the header key
+    client_key = request.headers.get("X-Upload-Key")
+    if client_key != UPLOAD_KEY:
+        return jsonify({"error": "Unauthorized"}), 403
+
     data = request.get_json()
     if not data:
         return jsonify({"error": "Invalid JSON"}), 400
-    
+
+    # Save without the key
     with open(QUIZ_FILE, "w") as f:
         json.dump(data, f, indent=2)
-    return jsonify({"status": "recieved", "quiz": data}), 200
+
+    return jsonify({"status": "received"}), 200
+
 
 @app.route("/quizz")
 def display_quizz():

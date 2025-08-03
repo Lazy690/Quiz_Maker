@@ -2,9 +2,12 @@ import json
 import os
 import tkinter as tk
 from tkinter import messagebox
+import requests
+from dotenv import load_dotenv
 
 
 #break down new_save_button into smaller fucntions
+
 def make_scrollable_frame(container):
     canvas = tk.Canvas(container)
     scrollbar = tk.Scrollbar(container, orient="vertical", command=canvas.yview)
@@ -44,24 +47,37 @@ def get_ques_text(ques_text):
             question_list = []
             for i in range(len(ques_text)):
                 question_list.append(ques_text[i].get("1.0", "end-1c"))
-           
+            
             return question_list
         
-def get_options_box(ques_options):
+def get_options_box(ques_options, max_score):
               
             options_list = []
+            biggest_points = []
+            point_sum = []
+            
             for i in ques_options: 
                 options_for_question_list = []
-                
+                point = []
                 for c in i:
                     option = {}
+                    
+                    
                     option["text"] = (c["text"].get("1.0", "end-1c"))
                     option["point"] = (c["point"].get("1.0", "end-1c"))
+                    point.append(int((c["point"].get("1.0", "end-1c"))))
+                    
                     options_for_question_list.append(option) 
-
                 options_list.append(options_for_question_list)
-               
-            return options_list
+                print(f"point {point}")
+                biggest_points.append(max(point))
+            
+            print(f"biggest points {biggest_points}")
+            
+            if sum(biggest_points) > int(max_score):
+                messagebox.showwarning("input error", f"The sum of the points cannot exeed max score: {max_score}")
+            else:  
+                return options_list
 
 def get_answer_text(answer_text):
             answers_text_list = []
@@ -82,7 +98,7 @@ def get_answer_score(answer_score):
            
             return answer_score_list
 
-def construct_dictionary(title, description, questions, options, answers, scores):
+def construct_dictionary(title, description, questions, options, answers, scores, max_score):
     
     
 
@@ -123,6 +139,7 @@ def construct_dictionary(title, description, questions, options, answers, scores
     answers_dic = make_answers_dick(answers, scores)
     package_json["title"] = title
     package_json["description"] = description
+    package_json["max_score"] = max_score
 
     package_json["questions"] = questions_dic
     package_json["answers"] = answers_dic
@@ -133,12 +150,12 @@ def construct_dictionary(title, description, questions, options, answers, scores
     
 
 ##save buttons##
-def new_save_button(title, description, questions, options, answers, scores):
-    package = construct_dictionary(title, description, questions, options, answers, scores)
+def new_save_button(title, description, questions, options, answers, scores, max_score):
+    package = construct_dictionary(title, description, questions, options, answers, scores, max_score)
     save_json(package)
 
-def edit_save_button(title, description, questions, options, answers, scores, path):
-    package = construct_dictionary(title, description, questions, options, answers, scores)
+def edit_save_button(title, description, questions, options, answers, scores, max_score, path):
+    package = construct_dictionary(title, description, questions, options, answers, scores, max_score)
     overwrite_json(package, path)  
 
 ##file management##
@@ -156,6 +173,7 @@ def save_json(package):
 
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(package, f, indent=4, ensure_ascii=False)
+    messagebox.showinfo("Success", "Quiz saved successfully!")
     
 def overwrite_json(package, filepath):
     with open(filepath, 'w', encoding='utf-8') as f:
@@ -167,6 +185,29 @@ def delete_json(path):
     else:
          print("file doesnt exist")
 
+def upload_json(file, base_dir):
+        title = file
+        load_dotenv()  # loads .env
+
+        upload_key = os.getenv("UPLOAD_KEY")
+        def load_json(file):
+            # Get base path relative to script location
+            
+            selected_filepath_locaction = os.path.join(base_dir, "quizzes", file)
+
+            with open(selected_filepath_locaction, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            return data
+        quiz_data = load_json(title)
+
+        response = requests.post("http://127.0.0.1:5000/submit-quiz", json=quiz_data, headers={"X-Upload-Key": upload_key})
+        if response.ok:
+           print("✅ Quiz successfully sent!")
+           print(file)
+        else:
+            print("❌ Failed to send quiz:", response.status_code, response.text)
+    
 ##Validate input##
 
 def show_error(root, error): 
@@ -183,7 +224,13 @@ def show_error(root, error):
         tk.Button(root_error, text="back", command=lambda:  on_accept()).pack()
      
 def validate_new(title, description, questions, options, answers, scores, max_score):
-    if sum(options["point"]) > max_score:
-         messagebox.showwarning("Invalid inputs","Sum of the points cannot exede the max score") 
+    
+    points_sum = []
+    for i in range(options):
+        option = options[i]
+        points_sum.append(option["point"])
+        
+    if sum(points_sum) > max_score:
+            messagebox.showwarning("Invalid inputs","Sum of the points cannot exede the max score") 
     else:
-         return new_save_button(title, description, questions, options, answers, scores)
+        return new_save_button(title, description, questions, options, answers, scores)

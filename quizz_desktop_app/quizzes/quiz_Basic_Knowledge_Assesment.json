@@ -1,6 +1,7 @@
 {
     "title": "Basic Knowledge Assessment",
     "description": "A short test to evaluate general knowledge and critical thinking.",
+    "max_score": "6",
     "questions": {
         "question 1": {
             "text": "Which planet is known as the Red Planet?",

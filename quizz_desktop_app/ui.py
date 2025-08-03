@@ -3,7 +3,6 @@ from tkinter import font as tkfont
 from PIL import Image, ImageTk
 import logic
 import uiFunctions
-import requests
 import os
 import json
 
@@ -243,18 +242,18 @@ def show_new_quiz_screen(root):
    
 
                                                                           
-        Save_button = tk.Button(scrollable, text="Save", command= lambda: logic.validate_new(title_box.get("1.0", "end-1c"),
+        Save_button = tk.Button(scrollable, text="Save", command= lambda: logic.new_save_button(title_box.get("1.0", "end-1c"),
                                                                                             desc_box.get("1.0", "end-1c"),
                                                                                             logic.get_ques_text(ques_text),
-                                                                                            logic.get_options_box(ques_options),
+                                                                                            logic.get_options_box(ques_options, max_score),
                                                                                             logic.get_answer_text(answer_text),
                                                                                             logic.get_answer_score(answer_conditions),
-                                                                                            max_score))
+                                                                                            max_score
+                                                                                            ))
         Save_button.pack()
         #exit button
         exit = tk.Button(scrollable, text="back", command= lambda: show_main_menu(root))
         exit.pack()  
-    
     
 def show_upload_quiz_screen(root):
     for widget in root.winfo_children():
@@ -276,20 +275,17 @@ def show_upload_quiz_screen(root):
 
         # Frame for each file row
         file_frame = tk.Frame(scrollable, pady=5, padx=10, bd=1, relief="groove")
-        file_frame.pack(pady=10)
+        file_frame.pack(fill="x", padx=20, pady=10)
 
-        # Center the contents of the frame
-        inner_frame = tk.Frame(file_frame)
-        inner_frame.pack()
-
-        # File name label
-        name_label = tk.Label(inner_frame, text=file_str, font=("Arial", 12))
+        # File name label on the left
+        name_label = tk.Label(file_frame, text=file_str, font=("Arial", 12))
         name_label.pack(side="left", padx=(5, 20))
 
-        # Upload button
-        upload_btn = tk.Button(inner_frame, text="Upload", width=10,
-                            command=lambda i=i: upload_ask_confirm(root, selected_file(file_list, i)))
-        upload_btn.pack(side="left")
+        # Button on the right
+        upload_btn = tk.Button(file_frame, text="Upload", width=10,
+                               command=lambda i=i: upload_ask_confirm(root, selected_file(file_list, i)))
+        upload_btn.pack(side="right", padx=10)
+
 
 
     def upload_ask_confirm(root, selected):
@@ -302,33 +298,12 @@ def show_upload_quiz_screen(root):
         tk.Label(root_up_ask, text=selected, font=("Arial", 12)).pack()
         
         def on_accept():
-            upload_json(selected)
+            logic.upload_json(selected, base_dir)
             root_up_ask.destroy()
 
         tk.Button(root_up_ask, text="Accept", command=lambda:  on_accept()).pack()
         tk.Button(root_up_ask, text="Cancel", command=lambda:  root_up_ask.destroy()).pack()
 
-
-    def upload_json(file):
-        title = file
-
-        def load_json(file):
-            # Get base path relative to script location
-            
-            selected_filepath_locaction = os.path.join(base_dir, "quizzes", file)
-
-            with open(selected_filepath_locaction, "r", encoding="utf-8") as f:
-                data = json.load(f)
-
-            return data
-        quiz_data = load_json(title)
-
-        response = requests.post("http://127.0.0.1:5000/submit-quiz", json=quiz_data)
-        if response.ok:
-           print("✅ Quiz successfully sent!")
-           print(file)
-        else:
-            print("❌ Failed to send quiz:", response.status_code, response.text)
     #exit button
     tk.Button(scrollable, text="back", command= lambda: show_main_menu(root)).pack()
 
@@ -373,6 +348,7 @@ def show_manage_quiz_screen(root):
     def manage_delete_confirm(root, selected):
         selected_filepath_locaction = os.path.join(base_dir, "quizzes", selected)
         uiFunctions.ask_delete_permission(root, selected_filepath_locaction)
+        
          
     
     def manage_edit_screen(root, selected,):
@@ -490,12 +466,13 @@ def show_manage_quiz_screen(root):
 
 
         Save_button = tk.Button(scrollable, text="Save edits", command= lambda: uiFunctions.ask_edit_permission(root,
-                                                                                            title_box.get("1.0", "end-1c"),
-                                                                                            desc_box.get("1.0", "end-1c"),
-                                                                                            logic.get_ques_text(ques_text),
-                                                                                            logic.get_options_box(ques_options),
-                                                                                            logic.get_answer_text(answer_text),
-                                                                                            logic.get_answer_score(answer_conditions),
+                                                                                            title_box,
+                                                                                            desc_box,
+                                                                                            ques_text,
+                                                                                            ques_options,
+                                                                                            answer_text,
+                                                                                            answer_conditions,
+                                                                                            json["max_score"],
                                                                                             path))
         Save_button.pack() 
         

@@ -3,7 +3,7 @@ import logic
 
 ##ask permission buttons##
 
-def ask_edit_permission(root, title, description, questions, options, answers, scores, path):
+def ask_edit_permission(root, title, description, questions, options, answers, scores, max_score, path):
         
         #create window
         root_ask_per = tk.Toplevel(root)
@@ -15,7 +15,14 @@ def ask_edit_permission(root, title, description, questions, options, answers, s
         tk.Button(root_ask_per, text="confirm", command= lambda: on_accept()).pack()
         tk.Button(root_ask_per, text="cancel", command= lambda: on_cancel()).pack()
         def on_accept():
-            logic.edit_save_button(title, description, questions, options, answers, scores, path)
+            logic.edit_save_button(title.get("1.0", "end-1c"),
+                                    description.get("1.0", "end-1c"),
+                                    logic.get_ques_text(questions),
+                                    logic.get_options_box(options, max_score),
+                                    logic.get_answer_text(answers),
+                                    logic.get_answer_score(scores),
+                                    max_score,
+                                    path)
             root_ask_per.destroy()
         def on_cancel():
             root_ask_per.destroy()

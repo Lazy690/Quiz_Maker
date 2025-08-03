@@ -1,6 +1,7 @@
 {
     "title": "Pipakistan Citizen Test",
     "description": "this is a test given to subjects after night raids to determine if they are an enemy of the revolution.",
+    "max_score": "6",
     "questions": {
         "question 1": {
             "text": "What do you think is the biggest threat to progress?",

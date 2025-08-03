@@ -1,6 +1,7 @@
 {
     "title": "What Type of Thinker Are You?",
     "description": "This quiz helps determine your natural thinking style based on your preferences.",
+    "max_score": "6",
     "questions": {
         "question 1": {
             "text": "When solving a problem, you usually:",
