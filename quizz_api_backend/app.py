@@ -10,10 +10,20 @@ app = Flask(__name__)
 QUIZ_DIR = "quizzes"
 QUIZ_FILE = os.path.join(QUIZ_DIR, "current_quiz.json")
 
-@app.route("/")
-def home():
-    return "Bare witness, I have become death, distroyer of worlds!!!"
+@app.route("/quizz")
+def display_quizz():
+    if not os.path.exists(QUIZ_FILE):
+        return "no quiz data found", 404
 
+    with open(QUIZ_FILE, "r") as f:
+        quiz_data = json.load(f)
+    
+    return render_template("quiz_page.html", quiz=quiz_data)
+
+def load_current_quiz():
+    with open(QUIZ_FILE, "r") as f:
+        return json.load(f)
+    
 @app.route("/submit-quiz", methods=["POST"])
 def submit_quiz():
     # Check the header key
@@ -31,21 +41,6 @@ def submit_quiz():
 
     return jsonify({"status": "received"}), 200
 
-
-@app.route("/quizz")
-def display_quizz():
-    if not os.path.exists(QUIZ_FILE):
-        return "no quiz data found", 404
-
-    with open(QUIZ_FILE, "r") as f:
-        quiz_data = json.load(f)
-    
-    return render_template("quiz_page.html", quiz=quiz_data)
-
-def load_current_quiz():
-    with open(QUIZ_FILE, "r") as f:
-        return json.load(f)
-    
 @app.route('/submit-answers', methods=['POST'])
 def submit_answers():
     submitted_data = request.form
