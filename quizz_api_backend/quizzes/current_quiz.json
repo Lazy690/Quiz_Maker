@@ -1,55 +1,55 @@
 {
-  "title": "What Type of Thinker Are You?",
-  "description": "This quiz helps determine your natural thinking style based on your preferences.",
+  "title": "Basic Knowledge Assessment",
+  "description": "A short test to evaluate general knowledge and critical thinking.",
   "max_score": "6",
   "questions": {
     "question 1": {
-      "text": "When solving a problem, you usually:",
+      "text": "Which planet is known as the Red Planet?",
       "options": {
         "option 1": {
-          "text": "Trust your gut instinct",
+          "text": "Earth",
           "point": "0"
         },
         "option 2": {
-          "text": "Analyze the data and facts",
+          "text": "Mars",
           "point": "1"
         },
         "option 3": {
-          "text": "Ask others for their opinions",
+          "text": "Jupiter",
           "point": "2"
         }
       }
     },
     "question 2": {
-      "text": "How do you handle conflict?",
+      "text": "What is the boiling point of water at sea level?",
       "options": {
         "option 1": {
-          "text": "Avoid it at all costs",
-          "point": "0"
-        },
-        "option 2": {
-          "text": "Confront it directly and calmly",
+          "text": "100\u00b0C",
           "point": "2"
         },
+        "option 2": {
+          "text": "0\u00b0C",
+          "point": "0"
+        },
         "option 3": {
-          "text": "Try to find a compromise",
+          "text": "50\u00b0C",
           "point": "1"
         }
       }
     },
     "question 3": {
-      "text": "Your desk is usually:",
+      "text": "Who wrote '1984'?",
       "options": {
         "option 1": {
-          "text": "Organized and tidy",
-          "point": "1"
-        },
-        "option 2": {
-          "text": "Covered in useful clutter",
+          "text": "George Orwell",
           "point": "2"
         },
+        "option 2": {
+          "text": "Aldous Huxley",
+          "point": "1"
+        },
         "option 3": {
-          "text": "Where's my desk again?",
+          "text": "Ray Bradbury",
           "point": "0"
         }
       }
@@ -57,21 +57,21 @@
   },
   "answers": {
     "answer 1": {
-      "text": "You are an intuitive thinker. You go with your instincts and see connections others may miss.",
+      "text": "Needs improvement. Please review the basics.",
       "conditions": {
         "from": "0",
         "to": "3"
       }
     },
     "answer 2": {
-      "text": "You are a balanced thinker. You combine logic with empathy and adapt well to different situations.",
+      "text": "Good job! You have a solid understanding.",
       "conditions": {
         "from": "4",
         "to": "5"
       }
     },
     "answer 3": {
-      "text": "You are a structured thinker. You rely on data and organization to approach life with clarity.",
+      "text": "Excellent! Top of the class.",
       "conditions": {
         "from": "6",
         "to": "10"

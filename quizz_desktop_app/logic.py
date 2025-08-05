@@ -178,10 +178,12 @@ def save_json(package):
 def overwrite_json(package, filepath):
     with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(package, f, ensure_ascii=False, indent=4)
+    messagebox.showinfo("Success", "Edits saved successfully!")
 
 def delete_json(path):
     if os.path.exists(path):
         os.remove(path)
+        messagebox.showinfo("Success", "✅ Quiz successfully deleted!")
     else:
          print("file doesnt exist")
 
@@ -197,15 +199,17 @@ def upload_json(file, base_dir):
 
             with open(selected_filepath_locaction, "r", encoding="utf-8") as f:
                 data = json.load(f)
+            
 
             return data
         quiz_data = load_json(title)
 
         response = requests.post("http://127.0.0.1:5000/submit-quiz", json=quiz_data, headers={"X-Upload-Key": upload_key})
         if response.ok:
-           print("✅ Quiz successfully sent!")
+           messagebox.showinfo("Success", "✅ Quiz successfully sent!")
            print(file)
         else:
+            messagebox.showinfo("Failed", "❌ Failed to send quiz:")
             print("❌ Failed to send quiz:", response.status_code, response.text)
     
 ##Validate input##
