@@ -204,7 +204,9 @@ def upload_json(file, base_dir):
             return data
         quiz_data = load_json(title)
 
-        response = requests.post("http://127.0.0.1:5000/submit-quiz", json=quiz_data, headers={"X-Upload-Key": upload_key})
+        api_url = "https://quiz-maker-api-ifdi.onrender.com/submit-quiz"
+
+        response = requests.post(api_url, json=quiz_data, headers={"X-Upload-Key": upload_key})
         if response.ok:
            messagebox.showinfo("Success", "✅ Quiz successfully sent!")
            print(file)
