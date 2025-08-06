@@ -10,7 +10,7 @@ app = Flask(__name__)
 QUIZ_DIR = "quizzes"
 QUIZ_FILE = os.path.join(QUIZ_DIR, "current_quiz.json")
 
-@app.route("/")
+@app.route("/quizz")
 def display_quizz():
     if not os.path.exists(QUIZ_FILE):
         return "no quiz data found", 404
