@@ -5,13 +5,20 @@ import logic
 import uiFunctions
 import os
 import json
+import sys
 
+def resource_path(relative_path):
+    """Get the absolute path to a resource, works for PyInstaller."""
+    if hasattr(sys, '_MEIPASS'):
+        # PyInstaller extracts files to a temporary folder
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
 
 def start_ui():
     root = tk.Tk()
     root.title("Quiz Maker ver-0.1")
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    icon_path = os.path.join(script_dir, "assets", "quiz_maker_icon_img_01.png")
+    icon_path = resource_path("assets/quiz_maker_icon_img_01.png")
     icon = tk.PhotoImage(file=icon_path)
     root.iconphoto(True, icon)
     show_main_menu(root)
@@ -33,8 +40,7 @@ def show_main_menu(root):
 
     # Get the directory of the currently running script
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    img_path = os.path.join(script_dir, "assets", "quiz_maker_menu_img_02.png")
-
+    img_path = resource_path("assets/quiz_maker_menu_img_02.png")
     # Load and place image in right_frame
     img = Image.open(img_path)
     img = img.resize((300, 300), Image.Resampling.LANCZOS)
@@ -59,7 +65,7 @@ def show_main_menu(root):
                               command=lambda: show_upload_quiz_screen(root))
     button_upload.pack(pady=10)
 
-    button_exit = tk.Button(left_frame, text="Exit", width=20, height=2, font=button_font, command=exit)
+    button_exit = tk.Button(left_frame, text="Exit", width=20, height=2, font=button_font, command=sys.exit)
     button_exit.pack(pady=10)
 
     contact_frame = tk.Frame(root, bg="lightgray")
@@ -108,8 +114,8 @@ def show_new_quiz_screen(root):
     add_button.pack()
 
     #exit button
-    exit = tk.Button(scrollable, text="back", command= lambda: show_main_menu(root))
-    exit.pack()
+    exit_button = tk.Button(scrollable, text="back", command= lambda: show_main_menu(root))
+    exit_button.pack()
     def add_questions_button_onlcick(root):
         
         #create window
@@ -252,8 +258,8 @@ def show_new_quiz_screen(root):
                                                                                             ))
         Save_button.pack()
         #exit button
-        exit = tk.Button(scrollable, text="back", command= lambda: show_main_menu(root))
-        exit.pack()  
+        exit_button = tk.Button(scrollable, text="back", command= lambda: show_main_menu(root))
+        exit_button.pack()  
     
 def show_upload_quiz_screen(root):
     for widget in root.winfo_children():
